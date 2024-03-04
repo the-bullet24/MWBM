@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formOperaciones">
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Ip no Permitida"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<p:panelGrid columns="4" style="width:100%">
+							<p:panelGrid columns="6" style="width:75%">
+
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Tarjeta: " style="font-weight:bold" />
+								</p:panelGrid>
+
+								<p:inputText id="itNumDocumento"
+									value="#{operacionesMVController.operacionesMVModel.numDocumento}"
+									maxlength="16" onkeypress="return validar(event)"></p:inputText>
+
+
+								<p:outputLabel value="Fecha Inicial: " style="font-weight:bold"
+									rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}" />
+
+								<p:calendar locale="es" id="maskFI" readonlyInput="true"
+									navigator="true"
+									rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}"
+									maxdate="#{operacionesMVController.operacionesMVModel.maxFechaInicioBusqueda}"
+									value="#{operacionesMVController.operacionesMVModel.fechaInicioBusqueda}"
+									pattern="dd/MM/yyyy" mask="true">
+								</p:calendar>
+
+								<h:outputText value="Fecha Final: "
+									rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}"></h:outputText>
+
+
+
+								<p:calendar locale="es" id="maskFF" readonlyInput="true"
+									rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}"
+									maxdate="#{operacionesMVController.operacionesMVModel.maxFechaFinBusqueda}"
+									value="#{operacionesMVController.operacionesMVModel.fechaFinBusqueda}"
+									navigator="true" pattern="dd/MM/yyyy" mask="true">
+								</p:calendar>
+
+
+								<h:outputText value="Tipo de Operación:"
+									style="font-weight:bold; text-align:left;"></h:outputText>
+
+
+								<p:selectOneMenu style="text-align:left;"
+									id="pgComboTransaccion"
+									converter="omnifaces.SelectItemsConverter"
+									value="#{operacionesMVController.operacionesMVModel.busquedaTipoOperacion}">
+
+									<p:ajax event="change" process="@this"
+										listener="#{operacionesMVController.obtenercomboTipoTransaccion}"
+										update="formOperaciones:pgComboTipoOperacion" />
+									<f:selectItem itemLabel="Seleccione" itemValue=""/>
+									<f:selectItems
+										value="#{operacionesMVController.operacionesMVModel.listaTipoGrupoOperacion}"
+										var="tipoOperacion" itemValue="#{tipoOperacion.id}"
+										itemLabel="#{tipoOperacion.descripcion}" />
+								</p:selectOneMenu>
+
+								<h:outputText value="" style="font-weight:bold"></h:outputText>
+								<h:outputText value="" style="font-weight:bold"></h:outputText>
+
+								<h:outputText value="Transacción:" style="font-weight:bold"></h:outputText>
+
+								<p:selectOneMenu style="text-align:left;"
+									id="pgComboTipoOperacion"
+									converter="omnifaces.SelectItemsConverter"
+									value="#{operacionesMVController.operacionesMVModel.codigoTransaccion}">
+									<f:selectItem itemLabel="TODOS" itemValue="" />
+									<f:selectItems
+										value="#{operacionesMVController.operacionesMVModel.listaTransaccionMV}"
+										var="tipoTransaccion" itemValue="#{tipoTransaccion.TXTHLPDAT}"
+										itemLabel="#{tipoTransaccion.TXTHLPDAT} - #{tipoTransaccion.TXTHLP}" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<center>
+
+								<p:commandButton value="Buscar" id="consultarClave"
+									update="formOperaciones:pgOperacionMV formOperaciones:tablaOperacionMV formOperaciones:mensaje"
+									onclick="statusDialog.show();"
+									oncomplete="statusDialog.hide();"
+									actionListener="#{operacionesMVController.consultaIPnoPermitida}"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+							</center>
+
+
+
+						</p:panelGrid>
+					</p:fieldset>
+
+					<p:panelGrid id="pgOperacionMV" columns="1" style="width:100%">
+						<p:fieldset id="fieldSetConsulta"
+							rendered="#{operacionesMVController.operacionesMVModel.busquedaNoRealizada()}">
+
+							<h:outputText
+								value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+								rendered="#{operacionesMVController.operacionesMVModel.existeConsultasNoEncontradas()}" />
+
+
+
+							<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+								<h:commandLink
+									rendered="#{operacionesMVController.operacionesMVModel.existeConsultasEncontradas()}"
+									actionListener="#{operacionesMVController.generarReporte(1)}">
+									<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+								</h:commandLink>
+								<h:commandLink
+									rendered="#{operacionesMVController.operacionesMVModel.existeConsultasEncontradas()}"
+									actionListener="#{operacionesMVController.generarReporte(2)}">
+									<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+								</h:commandLink>
+							</p:panelGrid>
+
+
+							<p:dataTable id="tablaOperacionMV"
+								value="#{operacionesMVController.operacionesMVModel.listaOperacionMV}"
+								rendered="#{operacionesMVController.operacionesMVModel.existeConsultasEncontradas()}"
+								var="consulta" paginator="true" paginatorPosition="bottom"
+								rows="10" style="table-layout: fixed;"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+								rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+
+								<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="2" headerText="Estado"
+											style="text-align:center;vertical-align: middle" />
+
+
+
+										<p:column rowspan="2" headerText="Fecha de operación"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Hora de operación"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Descripción"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Tarjeta/DNI"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Cuenta origen"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Cuenta destino"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Monto transacción"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Moneda"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="IP"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Mensaje host"
+											style="text-align:center;vertical-align: middle" />
+
+									</p:row>
+
+								</p:columnGroup>
+
+								<p:column rowspan="2" headerText="Estado"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.flgerror}" />
+								</p:column>
+
+								<p:column rowspan="2" headerText="Fecha de operacion"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.fechaDatpro}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Hora de operacion"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.horpro}" />
+								</p:column>
+
+								<p:column rowspan="2" headerText="Descripcion"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.deslarga}" />
+								</p:column>
+
+								<p:column rowspan="2" headerText="Tarjeta/DNI"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.numprdsrc}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Cuenta origen"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.nrocta}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Cuenta destino"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.numprdtar}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Monto transacción"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.amotra}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Moneda"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.codcur}" />
+								</p:column>
+								<p:column rowspan="2" headerText="IP"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.cipadr}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Mensaje host"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.msghst}" />
+								</p:column>
+
+
+							</p:dataTable>
+
+						</p:fieldset>
+
+
+					</p:panelGrid>
+
+
+				</p:panelGrid>
+
+			</center>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

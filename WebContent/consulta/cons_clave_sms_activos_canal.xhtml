@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions" template="../plantilla/plantilla.xhtml">
+
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formReporteConsulta">
+            <p:growl id="mensaje" showDetail="true" />
+            <center>
+                <br /> <br />
+                <p:outputLabel value="Clientes con Clave SMS activos por canal"
+                    style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+                <br /> <br />
+                <p:panelGrid columns="1" style="width:100%">
+                    <p:fieldset>
+                        <p:panelGrid columns="3" style="width:100%">
+                            <p:panelGrid columns="8" id="pgClaveSMS">
+                                <p:panelGrid columns="1">
+                                    <p:outputLabel value="Periodo a consultar: " style="font-weight:bold" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="1">
+
+                                    <p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.tipoBusquedaSeleccionada}">
+                                        <p:ajax event="change"
+                                            listener="#{consultaReporteClienteSMSController.obtenerFiltroBusqueda}"
+                                            update="formReporteConsulta:pgConsultaReporteCliente formReporteConsulta:tablaConsultaReporteCliente"/>
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaTipoBusqueda}"
+                                            var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+                                            itemLabel="#{tipoBusqueda.descripcion}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+							<p:panelGrid columns="1">
+                                    <p:outputLabel value="Fecha Inicial: " style="font-weight:bold"
+                                        rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionOcultarFiltros}" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" id="pgFechasBusquedaInicial">
+                                    <p:calendar locale="es" id="maskFI"
+                                    	navigator="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.bloquearFechaInicial}"
+										readonlyInput="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.bloquearFechaInicial}"
+                                        rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionOcultarFiltros}"                   
+                                        mindate="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.minFechaInicioBusqueda}"
+										maxdate="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.maxFechaInicioBusqueda}"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.fechaInicioBusqueda}"
+                                        pattern="dd/MM/yyyy" mask="true">
+                                    </p:calendar>
+								</p:panelGrid>
+                         
+                         		<p:panelGrid columns="1">
+                                    <p:outputLabel value="Fecha Final: " style="font-weight:bold"
+                                        rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionOcultarFiltros}" />
+                                </p:panelGrid>
+                                    
+                                <p:panelGrid columns="1" id="pgFechasBusquedaFinal">
+                                    <p:calendar locale="es" id="maskFF" readonlyInput="true"
+                                        rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionOcultarFiltros}"
+                                        mindate="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.minFechaInicioBusqueda}"
+                                        maxdate="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.maxFechaFinBusqueda}"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.fechaFinBusqueda}"
+                                        navigator="true" pattern="dd/MM/yyyy" mask="true">
+                                    </p:calendar>
+								</p:panelGrid>
+                                
+                                
+                              <p:fieldset   columns="1" legend="Periodo Inicial" style="height:100px; width:260px"
+                               rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionConsulta}">
+                               <h:panelGrid columns="2" cellpadding="10">
+       							<p:selectOneMenu style="text-align:left; margin-right:30px;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.anioInicioSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaAnios}"
+                                            var="año" itemValue="#{año.id}"
+                                            itemLabel="#{año.descripcion}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.mesInicioSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaMeses}"
+                                            var="mes" itemValue="#{mes.id}"
+                                            itemLabel="#{mes.nombre}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+   							 </p:fieldset>
+   							 
+   							  <p:fieldset   columns="1" legend="Periodo Final" style="height:100px ; width:260px"
+   							   rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionConsulta}">
+   							   	  <h:panelGrid columns="2" cellpadding="10">
+       							<p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.anioFinSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaAnios}"
+                                            var="año" itemValue="#{año.id}"
+                                            itemLabel="#{año.descripcion}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                    <p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.mesFinSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaMeses}"
+                                            var="mes" itemValue="#{mes.id}"
+                                            itemLabel="#{mes.nombre}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                    </h:panelGrid>
+   							 </p:fieldset>
+   							 
+                            </p:panelGrid>
+                            
+                           
+
+                            <center>
+
+                                <p:commandButton value="Buscar" id="consultarClave"
+                                   update="formReporteConsulta:pgConsultaReporteCliente formReporteConsulta:tablaConsultaReporteCliente formReporteConsulta:mensaje"
+                                    onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+                                    actionListener="#{consultaReporteClienteSMSController.obtenerConsultaClave}"
+                                    icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+                            </center>
+
+                        </p:panelGrid>
+                    </p:fieldset>
+                </p:panelGrid>
+
+			<p:panelGrid id="pgConsultaReporteCliente" columns="1" style="width:100%">
+					<p:fieldset id="fieldSetConsulta"
+						rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.busquedaNoRealizada()}">
+
+						<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.existeConsultasNoEncontradas()}" />
+
+						<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaReporteClienteSMSController.generarReporte(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaReporteClienteSMSController.generarReporte(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+ 
+						<p:dataTable id="tablaConsultaReporteCliente"
+							value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaConsultaReporteClienteResultado}"
+							var="consulta" paginator="true" paginatorPosition="bottom"
+							rows="10" style="table-layout: fixed;"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+							rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="4" headerText="Fecha" />
+									<p:column colspan="3" headerText="Usuaron Clave SMS SOLO en Multired Virtual" />
+									<p:column colspan="3" headerText="Usuaron Clave SMS SOLO en Banca Móvil" />
+									<p:column colspan="3" headerText="Usuaron Clave SMS SOLO en Ambos Canales" />
+									<p:column colspan="2" headerText="Total de Clientes que Usaron Clave SMS" />					
+								</p:row>
+								<p:row>
+									<p:column rowspan="2" headerText="Op. Fin."
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Op Adm."
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2"
+										headerText="Op. Fin."
+										style="text-align:center;vertical-align: middle" />
+									<p:column rowspan="2" headerText="Op Adm."
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2"
+										headerText="Op. Fin."
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Op Adm."
+										style="text-align:center;vertical-align: middle" />
+									<p:column rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total General"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Op. Fin."
+										style="text-align:center;vertical-align: middle" />
+									
+								</p:row>
+								
+							</p:columnGroup>
+							<p:column rowspan="2" headerText="Fecha"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.date}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Op. Fin."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opFinMV}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Op Adm."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opAdmMV}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opTotMV}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Op. Fin."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opFinBM}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Op Adm."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opAdmBM}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opTotBM}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Op. Fin."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opFinAC}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Op Adm."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opAdmAC}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opTotAC}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Total General"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totGen}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Op. Fin."
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.opFinTot}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:fieldset>
+				</p:panelGrid>
+
+            </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ibm-metadata>
+  <annotated-classes name="javax.faces.webapp.FacesServlet"/>
+  <annotated-classes name="org.omnifaces.cdi.eager.EagerBeansRequestListener"/>
+  <annotated-classes name="org.omnifaces.component.output.cache.CacheInitializerListener"/>
+  <annotated-classes name="org.springframework.web.context.ContextLoader"/>
+  <annotated-classes name="org.omnifaces.facesviews.FacesViewsInitializerListener"/>
+  <annotated-classes name="org.springframework.web.context.request.RequestContextListener"/>
+  <annotated-classes name="org.springframework.web.context.ContextLoaderListener"/>
+  <annotated-classes name="org.omnifaces.cdi.eager.EagerBeansSessionListener"/>
+  
+  <annotated-classes name="pe.bn.com.mwbm.presentacion.controlador.LoginController"/>
+  <annotated-classes name="org.springframework.web.filter.GenericFilterBean"/>
+  <annotated-classes name="org.springframework.web.filter.DelegatingFilterProxy"/>
+</ibm-metadata>

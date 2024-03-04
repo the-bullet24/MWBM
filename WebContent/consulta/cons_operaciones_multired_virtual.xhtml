@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formOpe">
+		
+											<script type="text/javascript">
+										function validar(e) {
+											var tecla = e.keyCode;
+
+											if (tecla == 8 || tecla == 9
+													|| tecla == 13) {
+												return true;
+											}
+											var tipoBusqueda = "#{operacionesMVController.operacionesMVModel.tipoBusquedaSeleccionada}";
+											var tipoBusquedaTipoDocumento = "#{operacionesMVController.operacionesMVModel.subTipoDocumento}";
+											
+										if (tipoBusqueda == 1
+													|| tipoBusqueda == 2
+													|| tipoBusqueda == 4
+													|| tipoBusqueda == 3) {
+												var patron = /[0-9]/;
+												var tecla_final = String
+													.fromCharCode(tecla);
+												return patron.test(tecla_final);
+												
+											} 
+										}
+									</script>
+									
+									
+									<script type="text/javascript">
+										$(document).ready(function() {
+											$('#limpiar').click(function() {
+												$('p:inputText').val('');
+											});
+										});
+									</script> 
+									
+									
+									<style type="text/css">
+									
+									.centered {
+
+										margin: 0 auto;
+										}
+									
+									</style>
+		
+		
+			<p:growl id="mensaje" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Consulta de Operaciones Multired Virtual"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				
+					<p:fieldset>
+						<p:panelGrid columns="3" style="width:100%">
+						
+						<p:panelGrid columns="1" style="width:100%">
+						
+						<p:panelGrid columns="6" style="width:75%">
+	
+	
+									<h:outputText value="Filtrar por:"
+										style="font-weight:bold"></h:outputText>
+								
+								<p:selectOneMenu style="text-align:left;"
+										id="pgFiltrarpor"
+										converter="omnifaces.SelectItemsConverter"
+										value="#{operacionesMVController.operacionesMVModel.tipoBusquedaServicioTransaccion}">
+										
+										<p:ajax event="change"
+											listener="#{operacionesMVController.obtenerFiltroServicioTransaccion()}"
+											update="formOpe:pgFiltros formOpe:pgBuscarPor formOpe:pgBuscarTasas"/>
+											
+										<f:selectItem itemLabel="Seleccione" itemValue="0"/>	
+										<f:selectItems
+											value="#{operacionesMVController.operacionesMVModel.listTipoBusquedaServicioTransaccion}"
+											var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+											itemLabel="#{tipoBusqueda.descripcion}"
+											 onChange="jsFunction()" id="limpia"/>
+								</p:selectOneMenu>
+	
+								
+									
+										
+										
+								<p:outputLabel value="Fecha Inicial: "
+										style="font-weight:bold"
+										rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}" />		
+								
+								<p:calendar locale="es" id="maskFI" readonlyInput="true"
+										navigator="true"
+										rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}"
+										maxdate="#{operacionesMVController.operacionesMVModel.maxFechaInicioBusqueda}"
+										value="#{operacionesMVController.operacionesMVModel.fechaInicioBusqueda}" pattern="dd/MM/yyyy" mask="true">
+								</p:calendar>
+								
+								<h:outputText value="Fecha Final: "
+									rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}"></h:outputText>
+								
+								
+								
+								<p:calendar locale="es" id="maskFF" readonlyInput="true"
+										rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltros}"
+										maxdate="#{operacionesMVController.operacionesMVModel.maxFechaFinBusqueda}"
+										value="#{operacionesMVController.operacionesMVModel.fechaFinBusqueda}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true">
+								</p:calendar>
+														
+
+								
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="10" style="width:100%">
+						
+							<p:panelGrid columns="4" style="width:80%" id="pgFiltros">
+						
+														<h:outputText value="Tipo de Operación:"
+																style="font-weight:bold; text-align:left;"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTransaccion}"></h:outputText>
+						
+						
+														<p:selectOneMenu style="text-align:left;"
+															id="pgComboTransaccion"
+															converter="omnifaces.SelectItemsConverter"
+															rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTransaccion}"
+															value="#{operacionesMVController.operacionesMVModel.busquedaTipoOperacion}">
+															
+															<p:ajax event="change"
+															process="@this"
+															listener="#{operacionesMVController.obtenerFiltroTipoTransaccion}"
+															update="formOpe:pgFiltros formOpe:pgComboTipoOperacion formOpe:pgBuscarPor"/>
+															
+																<f:selectItems
+																value="#{operacionesMVController.operacionesMVModel.listaTipoOperacion}"
+														        var="tipoOperacion" itemValue="#{tipoOperacion.code}"
+																	itemLabel="#{tipoOperacion.name}"/>	
+														</p:selectOneMenu>
+						
+						
+													
+						
+														<h:outputText value="Transacción:"
+																style="font-weight:bold"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroTransaccion}"
+																></h:outputText>
+														
+														
+						
+														<p:selectOneMenu style="text-align:left;"
+															id="pgComboTipoOperacion"
+															converter="omnifaces.SelectItemsConverter"
+															rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroTransaccion}"
+															value="#{operacionesMVController.operacionesMVModel.codigoTransaccion}">							
+																<f:selectItems
+																	value="#{operacionesMVController.operacionesMVModel.listaTransaccionMV}"
+																	var="tipoTransaccion" itemValue="#{tipoTransaccion.TXTHLPDAT}"
+																	itemLabel="#{tipoTransaccion.TXTHLPDAT} - #{tipoTransaccion.TXTHLP}"
+																	/>	
+															</p:selectOneMenu>
+														
+														<h:outputText value="Servicio:" 
+															style="font-weight:bold"
+															rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboServicio}"></h:outputText>
+														
+														
+														<p:selectOneMenu style="text-align:left;"
+																id="pgComboServicio"
+																converter="omnifaces.SelectItemsConverter"
+																value="#{operacionesMVController.operacionesMVModel.codigoGrupoServicio}"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboServicio}">
+						
+																<p:ajax event="change" 
+																	process="@this"
+																	listener="#{operacionesMVController.obtenerFiltroTipoServicio}"
+																	update="formOpe:pgFiltros formOpe:pgComboTipoServicio"/>
+																<f:selectItem itemLabel="Seleccione" itemValue="0"/>
+																<f:selectItems
+																	value="#{operacionesMVController.operacionesMVModel.listaGrupoServicioMV}"
+																	var="grupoServicio" itemValue="#{grupoServicio.TXTHLPDAT}"
+																	itemLabel="#{grupoServicio.TXTHLP}" />
+															</p:selectOneMenu>
+														
+														
+														
+														<h:outputText value="Tipo de Servicio" style="font-weight:bold"
+														rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroServicio}"></h:outputText>
+														
+														<p:selectOneMenu style="text-align:left;"
+																id="pgComboTipoServicio"
+																converter="omnifaces.SelectItemsConverter"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroServicio}"
+																value="#{operacionesMVController.operacionesMVModel.codigoTipoServicio}">
+								
+																<f:selectItem itemLabel="Seleccione" itemValue="0"/>
+																<f:selectItems
+																	value="#{operacionesMVController.operacionesMVModel.listaTipoServicio}"
+																	var="tipoServicio" itemValue="#{tipoServicio.TXTHLPDAT}"
+																	itemLabel="#{tipoServicio.TXTHLP}" />
+															</p:selectOneMenu>
+						
+													</p:panelGrid>
+							
+							<p:panelGrid columns="6" style="width:20%" id="pgBuscarPor">	
+															
+															<p:outputLabel value="Buscar por: " 
+															style="font-weight:bold" 
+															rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTransaccion}"/>
+															
+															<p:selectOneMenu style="text-align:left;"
+															id="pgTipoBusqueda"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTransaccion}"
+																value="#{operacionesMVController.operacionesMVModel.tipoBusquedaSeleccionada}">
+																
+																<p:ajax event="change"
+																	listener="#{operacionesMVController.obtenerFiltroBusqueda}"
+																	update=" formOpe:itNumDocumento formOpe:pgOperacionMV formOpe:tablaOperacionMV" 
+																	/>
+																	
+																<f:selectItems
+																	value="#{operacionesMVController.operacionesMVModel.listTipoBusquedaOperacionesMV}"
+																	var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+																	itemLabel="#{tipoBusqueda.descripcion}"
+																	onChange="jsFunction()" id="limpiar" />
+															</p:selectOneMenu>	
+															
+															
+															<p:outputLabel value="Buscar por: " 
+															style="font-weight:bold" 
+															rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboServicio}"/>
+															
+															<p:selectOneMenu style="text-align:left;"
+															id="pgTipoBusqueda2"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboServicio}"
+																value="#{operacionesMVController.operacionesMVModel.tipoBusquedaSeleccionada}">
+																
+																<p:ajax event="change"
+																	listener="#{operacionesMVController.obtenerFiltroBusqueda}"
+																	update=" formOpe:itNumDocumento formOpe:pgOperacionMV formOpe:tablaOperacionMV" 
+																	/>
+																	
+																<f:selectItems
+																	value="#{operacionesMVController.operacionesMVModel.listTipoBusquedaOperacionesMV2}"
+																	var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+																	itemLabel="#{tipoBusqueda.descripcion}"
+																	onChange="jsFunction()" id="limpiar2" />
+															</p:selectOneMenu>
+															
+																<p:inputText id="itNumDocumento"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboBuscarPor}"
+																value="#{operacionesMVController.operacionesMVModel.numDocumento}"
+																maxlength="20"
+																onkeypress="return validar(event)"></p:inputText>									
+																						
+														</p:panelGrid>
+						
+						</p:panelGrid>
+						
+						<p:panelGrid columns="3" style="width:25%" id="pgBuscarTasas">
+						
+															<p:outputLabel value="Buscar por: " 
+															style="font-weight:bold" 
+															rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTasas}"/>
+															
+															<p:selectOneMenu style="text-align:left;"
+															id="pgTipoBusqueda3"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTasas}"
+																value="#{operacionesMVController.operacionesMVModel.tipoBusquedaSeleccionada}">
+																
+																<p:ajax event="change"
+																	listener="#{operacionesMVController.obtenerFiltroBusqueda}"
+																	update=" formOpe:itNumDocumento formOpe:pgOperacionMV formOpe:tablaOperacionMV" 
+																	/>
+																	
+																<f:selectItems
+																	value="#{operacionesMVController.operacionesMVModel.listTipoBusquedaOperacionesMV3}"
+																	var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+																	itemLabel="#{tipoBusqueda.descripcion}"
+																	onChange="jsFunction()" id="limpiar3" />
+															</p:selectOneMenu>	
+															
+															<p:inputText id="itNumDocument2"
+																rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTasas}"
+																value="#{operacionesMVController.operacionesMVModel.numDocumento}"
+																maxlength="20"
+																onkeypress="return validar(event)"></p:inputText>
+															
+						
+						
+						</p:panelGrid>
+					
+					</p:panelGrid>		
+							
+							<center>
+
+								<p:commandButton value="Buscar" id="consultarClave"
+									update="formOpe:pgOperacionMV formOpe:tablaOperacionMV formOpe:mensaje formOpe:pgResumenMV formOpe:tablaResumenMV"
+									onclick="statusDialog.show();"
+									oncomplete="statusDialog.hide();"
+									actionListener="#{operacionesMVController.consultaServicio}"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+							</center>
+
+							
+						</p:panelGrid>					
+					</p:fieldset>
+				
+
+
+
+		
+						<p:panelGrid id="pgOperacionMV" columns="1" style="width:100%">
+						<p:fieldset id="fieldSetConsulta"
+					rendered="#{operacionesMVController.operacionesMVModel.busquedaNoRealizada()}">
+
+							<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{operacionesMVController.operacionesMVModel.existeConsultasNoEncontradas()}" />
+							
+							
+							
+							<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								rendered="#{operacionesMVController.operacionesMVModel.existeConsultasEncontradas()}"
+								actionListener="#{operacionesMVController.generarReporte(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{operacionesMVController.operacionesMVModel.existeConsultasEncontradas()}"
+								actionListener="#{operacionesMVController.generarReporte(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+
+						
+						<p:dataTable id="tablaOperacionMV"
+								value="#{operacionesMVController.operacionesMVModel.listaOperacionMV}"
+								rendered="#{operacionesMVController.operacionesMVModel.existeConsultasEncontradas()}"
+								var="consulta" paginator="true" paginatorPosition="bottom"
+								rows="10" style="table-layout: fixed;"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+								rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+								
+						<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="2" headerText="Estado"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Nro.Operación"
+											style="text-align:center;vertical-align: middle" />	
+											
+										<p:column rowspan="2" headerText="Fecha de operación"
+											style="text-align:center;vertical-align: middle" />	
+											
+										<p:column rowspan="2" headerText="Hora de operación"
+											style="text-align:center;vertical-align: middle" />
+											
+										<p:column rowspan="2" headerText="Transacción"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Descripción"
+											style="text-align:center;vertical-align: middle" />	
+															
+										<p:column rowspan="2" headerText="Tarjeta/DNI"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Cuenta origen"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Cuenta destino"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Monto transacción"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Moneda"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="IP"
+											style="text-align:center;vertical-align: middle" />
+											
+										<p:column rowspan="2" headerText="Mensaje host"
+											style="text-align:center;vertical-align: middle" />
+											
+										<p:column rowspan="2" headerText="Ver Refrendo"
+											style="text-align:center;vertical-align: middle" />
+																
+									</p:row>
+
+								</p:columnGroup>
+			
+								<p:column rowspan="2" headerText="Estado"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.flgerror}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Nro.Operación"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.numope}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Fecha de operacion"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.fechaDatpro}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Hora de operacion"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.horpro}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Transacción"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.codtrahst}" />
+								</p:column>
+								
+								<p:column rowspan="2" headerText="Descripcion"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.deslarga}" />
+								</p:column>
+								
+								<p:column rowspan="2" headerText="Tarjeta/DNI"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.numprdsrc}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Cuenta origen"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.nrocta}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Cuenta destino"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.numprdtar}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Monto transacción"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.amotra}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Moneda"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.codcur}" />
+								</p:column>
+								<p:column rowspan="2" headerText="IP"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.cipadr}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Mensaje host"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.msghst}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Ver Refrendo"
+									style="text-align:center;vertical-align: middle" >
+								
+								<p:commandButton icon="#{cad['icono.redireccionar']}"
+									rendered="#{operacionesMVController.mostrarConstancia(consulta.flgerror,consulta.codtrahst)}"
+									actionListener="#{operacionesMVController.consultarDatosConstanciaOperacionMV(consulta.numLog,consulta.codtrahst)}"
+									styleClass="boton-operaciones" title="Enviar constancia"/>
+									
+									
+								</p:column>
+								
+				</p:dataTable>
+	
+			</p:fieldset>
+			
+			<center>
+			<p:panelGrid id="pgResumenMV" columns="1" style="width:40%" styleClass="centered">
+			<p:fieldset id="fieldSetConsultaResumen"
+					rendered="#{operacionesMVController.operacionesMVModel.busquedaNoRealizada()}">
+						
+						<p:dataTable id="tablaResumenMV"
+								value="#{operacionesMVController.operacionesMVModel.listResumen}"
+								
+								var="resumen" rowIndexVar="index">
+							<f:facet name="header">
+           						 RESUMEN
+        					</f:facet>
+							<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="2" headerText="Descripción"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="En Soles (S/.)"
+											style="text-align:center;vertical-align: middle" />	
+											
+										<p:column rowspan="2" headerText="En Dólares ($/.)"
+											style="text-align:center;vertical-align: middle" />	
+								
+									</p:row>
+
+								</p:columnGroup>
+			
+								<p:column rowspan="2" headerText="Descripción"
+									style="text-align:left;vertical-align: middle">
+									<h:outputText value="#{resumen.descripcion}" />
+								</p:column>
+								<p:column rowspan="2" headerText="En Soles (S/.)"
+									style="text-align:left;vertical-align: middle">
+									<h:outputText value="#{resumen.soles}" />
+								</p:column>
+								<p:column rowspan="2" headerText="En Dólares ($/.)"
+									style="text-align:left;vertical-align: middle">
+									<h:outputText value="#{resumen.dolares}" />
+								</p:column>
+		
+				</p:dataTable>
+			</p:fieldset>
+	</p:panelGrid>
+	</center>		
+	
+	</p:panelGrid>
+			</center>
+		</h:form>
+		
+		
+		<p:dialog widgetVar="enviarConstanciaWidget" modal="true"
+			appendTo="@(body)" resizable="false" closeOnEscape="false"
+			closable="false" position="center" showEffect="clip"
+			draggable="false" hideEffect="clip"
+			header="Enviar Constancia de Operación">
+			<h:form id="formEnviarConstancia">
+		
+		<br/>
+			<p:fieldset legend="ENVIO DE CORREO ELECTRONICO">
+					
+					<p:panelGrid columns="2" id="itEmailPanelGrid">
+						<h:outputText value="Para:"
+							style="font-weight: bolder;" />		
+						<p:inputText
+							size="50" id="itEmailTitular"
+							value="#{operacionesMVController.operacionesMVModel.emailTitular}"/>
+						<h:outputText value="CC: "
+							style="font-weight: bolder;" />		
+						<p:inputText
+							size="50" id="itEmailCC"
+							value="#{operacionesMVController.operacionesMVModel.emailAlternativo}"/>
+						<h:outputText value="Asunto: "
+							style="font-weight: bolder;" />		
+						<h:outputLabel
+							size="50" id="itAsunto"
+							value="#{operacionesMVController.operacionesMVModel.asunto}"/>
+					</p:panelGrid>
+				</p:fieldset>
+			
+				<br/>
+				<br/>
+			<h:outputText value="#{operacionesMVController.operacionesMVModel.htjoutraConstanciaModel.clobcons}"  escape="false" />
+					<br/>
+					<br/>
+				<center>
+						<p:commandButton value="Reenviar" styleClass="boton-operaciones"
+							onclick="confirmarEnvioConstanciaWidget.show();"
+							icon="#{cad['icono.redireccionar']}" />
+						
+						<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+							onclick="enviarConstanciaWidget.hide();"
+							icon="#{cad['icono.cancelar']}" />	
+				</center>
+						
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="confirmarEnvioConstanciaWidget" modal="true"
+			closable="false" appendTo="@(body)" resizable="false"
+			closeOnEscape="false" draggable="false" position="center"
+			showEffect="clip" hideEffect="clip" header="Confirmar">
+			<h:form id="formConfirmarEnvio">
+				<center>
+					<p:panel>
+						<br></br>
+							 ¿Esta seguro de reenviar la constancia de operación?
+						<br />
+						<br></br>
+						<p:commandButton value="Aceptar" styleClass="boton-operaciones"
+							icon="#{cad['icono.validar.aceptar']}"
+							onclick="statusDialog.show();confirmarEnvioConstanciaWidget.hide();enviarConstanciaWidget.hide();enviarConstanciaConsultaMovimientosWidget.hide();"
+							actionListener="#{operacionesMVController.reenviarConstanciaOperacion()}"
+							oncomplete="statusDialog.hide();" />
+
+						<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+							onclick="statusDialog.show();"
+							oncomplete="statusDialog.hide();confirmarEnvioConstanciaWidget.hide();"
+							icon="#{cad['icono.cancelar']}" />
+					</p:panel>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		
+				
+		<p:dialog widgetVar="enviarConstanciaConsultaMovimientosWidget" modal="true"
+			appendTo="@(body)" resizable="true" closeOnEscape="false"
+			closable="false" showEffect="clip"
+			draggable="false" hideEffect="clip"
+			width = "70%" position="center" 
+			height = "500px"
+			header="Enviar Constancia de Operación">
+			<h:form id="formEnviarConstanciaConsultaMovimientos">
+		
+		<br/>
+			<p:fieldset legend="ENVIO DE CORREO ELECTRONICO">
+					<center>
+						<p:panelGrid columns="2" id="itEmailPanelGrid">
+							<h:outputText value="Para:"
+								style="font-weight: bolder;" />		
+							<p:inputText
+								size="50" id="itEmailTitular"
+								value="#{operacionesMVController.operacionesMVModel.emailTitular}"/>
+							<h:outputText value="CC: "
+								style="font-weight: bolder;" />		
+							<p:inputText
+								size="50" id="itEmailCC"
+								value="#{operacionesMVController.operacionesMVModel.emailAlternativo}"/>
+							<h:outputText value="Asunto: "
+								style="font-weight: bolder;" />		
+							<h:outputLabel
+								size="50" id="itAsunto"
+								value="#{operacionesMVController.operacionesMVModel.asunto}"/>
+						</p:panelGrid>
+					</center>
+				</p:fieldset>
+			
+				<br/>
+				<br/>
+				<p:scrollPanel>
+					<p>
+						<h:outputText value="#{operacionesMVController.operacionesMVModel.htjoutraConstanciaModel.clobcons}"  escape="false" />
+					</p>
+				</p:scrollPanel>	
+					<br/>
+					<br/>
+				<center>
+						<p:commandButton value="Reenviar" styleClass="boton-operaciones"
+							onclick="confirmarEnvioConstanciaWidget.show();"
+							icon="#{cad['icono.redireccionar']}" />
+						
+						<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+							onclick="enviarConstanciaConsultaMovimientosWidget.hide();"
+							icon="#{cad['icono.cancelar']}" />	
+				</center>
+					
+				
+			</h:form>
+		</p:dialog>
+		
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formResumenes">
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Resúmenes operativos"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br></br> <br></br> <br></br>
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<p:panelGrid columns="2" style="width:100%">
+							<p:panelGrid columns="4" style="width:100%">
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Tipo busqueda: *"
+										style="font-weight:bold;" />
+								</p:panelGrid>
+								<p:panelGrid columns="2">
+									<p:selectOneRadio
+										value="#{resumenController.resumenModel.tipoVista}">
+										<p:ajax
+											listener="#{resumenController.resumenModel.setBusquedaRealizada(false)}"
+											update=":formResumenes" />
+										<f:selectItems
+											value="#{resumenController.resumenModel.listaTiposVista}"
+											var="tipoVista" itemLabel="#{tipoVista.valor}"
+											itemValue="#{tipoVista.id}" />
+									</p:selectOneRadio>
+								</p:panelGrid>
+
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Periodo desde: *"
+										style="font-weight:bold;" />
+								</p:panelGrid>
+								<p:panelGrid columns="4">
+									<p:calendar locale="es" id="maskFI" readonlyInput="true"
+										maxdate="#{resumenController.resumenModel.fechaMax}"
+										requiredMessage="Seleccione una fecha inicial" required="true"
+										navigator="true"
+										value="#{resumenController.resumenModel.fechaInicioBusqueda}"
+										pattern="dd/MM/yy" mask="true">
+										<p:ajax event="dateSelect" update=":formResumenes" />
+									</p:calendar>
+									<h:outputText value="hasta"></h:outputText>
+									<p:calendar locale="es" id="maskFF" readonlyInput="true"
+										maxdate="#{resumenController.resumenModel.fechaMax}"
+										requiredMessage="Seleccione una fecha final" required="true"
+										value="#{resumenController.resumenModel.fechaFinBusqueda}"
+										navigator="true" pattern="dd/MM/yy" mask="true">
+										<p:ajax event="dateSelect" update=":formResumenes" />
+									</p:calendar>
+								</p:panelGrid>
+							</p:panelGrid>
+
+							<p:commandButton value="Buscar" id="consultarResumenes"
+								update="formResumenes:fieldSetResultados formResumenes:mensaje formResumenes:panelGridResultados"
+								onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+								actionListener="#{resumenController.buscarResumenes()}"
+								icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+						</p:panelGrid>
+
+					</p:fieldset>
+				</p:panelGrid>
+				<p:panelGrid id="panelGridResultados" columns="1"
+					style="width:100%;">
+
+					<p:fieldset id="fieldSetResultados"
+						rendered="#{resumenController.resumenModel.busquedaRealizada}">
+						<br />
+
+						<h:outputText
+							value="No hay operaciones realizadas con criterios de busqueda seleccionados"
+							rendered="#{!resumenController.resumenModel.hayResumenesObtenidos()}" style="width:100%;"/>
+
+						<p:panelGrid columns="1"
+							rendered="#{resumenController.resumenModel.hayResumenesObtenidos()}" style="width:100%;">
+							<p:panelGrid columns="2">
+								<h:outputText value="Totales generales " />
+								<br />
+								<br />
+								<h:outputText value="Número de transacciones total: " />
+								<h:outputText
+									value="#{resumenController.resumenModel.totalesGenerales.cantidadPorTrans}" />
+								<h:outputText value="Importe de transacciones total: " />
+								<h:outputText
+									value="#{resumenController.resumenModel.totalesGenerales.importePorTrans}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" style="float:right;margin-right:2px;"
+								rendered="#{resumenController.resumenModel.tipoVista eq 0}">
+								<h:commandLink
+									actionListener="#{resumenController.generarPdf()}">
+									<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+								</h:commandLink>
+								<h:commandLink
+									actionListener="#{resumenController.generarExcel()}">
+									<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+								</h:commandLink>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" style="float:right;margin-right:2px;"
+								rendered="#{resumenController.resumenModel.tipoVista eq 1}">
+								<h:commandLink
+									actionListener="#{resumenController.generarPdfContable()}">
+									<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+								</h:commandLink>
+								<h:commandLink
+									actionListener="#{resumenController.generarExcelContable()}">
+									<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+								</h:commandLink>
+							</p:panelGrid>
+
+							<p:dataTable id="tablaResumenTransaccional" paginator="true"
+								paginatorPosition="bottom" rows="5"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+								currentPageReportTemplate="{currentPage} de {totalPages}"
+								rowsPerPageTemplate="5,10,15"
+								value="#{resumenController.resumenModel.listaResumenes}"
+								var="resumen" emptyMessage="No hay operaciones realizadas"
+								rendered="#{resumenController.resumenModel.tipoVista eq 0}">
+								<p:column headerText="Tipo de operación"
+									style="widht:10%;text-align:left; vertical-align: middle;">
+									<h:outputText value="#{resumen.tipoOperacion}">
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Transacción"
+									style="widht:10%;text-align:left; vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.tipoTransaccion}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="Número de transacciones"
+									style="widht:23%; text-align:right;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.cantidadPorTrans}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="Importe de transacción S/."
+									style="widht:8%;text-align:right;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.importePorTrans}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="% individual"
+									style="widht:8%;text-align:right;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.porcentajeIndividual}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="% Acumulado"
+									style="widht:32%;text-align:right;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.porcentajeAcumulado}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+									</ui:repeat>
+								</p:column>
+							</p:dataTable>
+
+							<p:dataTable id="tablaResumenContable" paginator="true"
+								paginatorPosition="bottom" rows="5"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+								currentPageReportTemplate="{currentPage} de {totalPages}"
+								rowsPerPageTemplate="5,10,15"
+								value="#{resumenController.resumenModel.listaResumenesContables}"
+								var="resumen" emptyMessage="No hay operaciones realizadas"
+								rendered="#{resumenController.resumenModel.tipoVista eq 1}"
+								style="width:100%">
+								<p:column headerText="Cuenta contable"
+									style="widht:10%;text-align:center; vertical-align: middle;"
+									groupRow="true">
+									<h:outputText value="#{resumen.numeroCuenta}">
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Nombre de la cuenta"
+									style="widht:10%;text-align:left; vertical-align: middle;"
+									groupRow="true">
+									<h:outputText value="#{resumen.descripcionCuenta}">
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Transaccion"
+									style="widht:23%; text-align:left;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.tipoTransaccion}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="N° de transacciones"
+									style="widht:4%;text-align:right;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.cantidadPorTrans}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="N° de transacciones total"
+									style="widht:4%;text-align:center;vertical-align: middle;">
+									<h:outputText value="#{resumen.cantidadTotal}"
+										style="float:right" />
+								</p:column>
+
+								<p:column headerText="Importe S/."
+									style="widht:8%;text-align:right;vertical-align: middle;">
+									<ui:repeat value="#{resumen.transacciones}" var="transaccion"
+										varStatus="transStatus">
+										<h:outputText value="#{transaccion.importePorTrans}" />
+										<h:panelGroup
+											rendered="#{!(transStatus.index >= resumen.transacciones.size()-1)}">
+											<div
+												style="border-bottom: dotted 0.5px; margin: 5px -10% 5px -10%" />
+										</h:panelGroup>
+
+									</ui:repeat>
+								</p:column>
+
+								<p:column headerText="Importe total"
+									style="widht:8%;text-align:center;vertical-align: middle;">
+									<h:outputText value="#{resumen.importeTotal}"
+										style="float:right" />
+								</p:column>
+
+							</p:dataTable>
+						</p:panelGrid>
+					</p:fieldset>
+				</p:panelGrid>
+			</center>
+		</h:form>
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<img src="#{request.contextPath}/resources/img/ajaxloadingbar.gif" />
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>

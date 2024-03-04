@@ -1,0 +1,2207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+
+		<h:form id="formInvitacionesbandeja">
+			<br />
+			<p:growl id="mensaje" showDetail="true" />
+
+			<br />
+			<br />
+			<center>
+				<p:outputLabel value="Bandeja de Comunicaciones / Invitaciones"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+			</center>
+			<br />
+			<br />
+			<p:panelGrid columns="1" style="width:100%">
+				<p:fieldset>
+					<br />
+					<center>
+						<p:panelGrid columns="7" style="width:40%; padding-right: 0px;"
+							id="pgAfiSMS">
+
+							<p:panelGrid columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+								<p:outputLabel value="Código:"
+									style="font-weight:bold; padding-right: 0px; width: 75px" />
+
+								<p:inputText id="txtCodigo"
+									value="#{invitacionesController.invitacionesModel.codeInvitacion}">
+								</p:inputText>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+								<p:outputLabel value="Invitación a:"
+									style="font-weight:bold; padding-right: 0px; width: 75px" />
+
+
+								<p:selectOneMenu style="text-align:left;" id="pgCombo1"
+									value="#{invitacionesController.invitacionesModel.busquedaSeleccionadaTipoInvitacion}">
+
+									<f:selectItems
+										value="#{invitacionesController.invitacionesModel.listaBusquedaTipoInvitacion}"
+										var="busquedaTipoInvitacion"
+										itemValue="#{busquedaTipoInvitacion.id}"
+										itemLabel="#{busquedaTipoInvitacion.descripcion}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+								<p:outputLabel value="Forma Invitación:"
+									style="font-weight:bold; padding-right: 0px; width: 75px" />
+
+								<p:selectOneMenu style="text-align:left;" 
+									id="pgCombo2"
+									
+									value="#{invitacionesController.invitacionesModel.busquedaSeleccionadaFormaInvitacion}">
+
+									<p:ajax event="change" process="@this"
+											listener="#{invitacionesController.obtenerOpcionProcesoLista}"
+											update="formInvitacionesbandeja:pgCombo4Intrusivo" />
+
+
+									<f:selectItems
+										value="#{invitacionesController.invitacionesModel.listaBusquedaFormaInvitacion}"
+										var="busquedaFormaInvitacion"
+										itemValue="#{busquedaFormaInvitacion.id}"
+										itemLabel="#{busquedaFormaInvitacion.descripcion}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panelGrid id="pgCombo4Intrusivo" columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+								<p:outputLabel 
+									id="pgLabel4"
+									rendered="#{invitacionesController.invitacionesModel.opcionProcesoLista}"
+									value="Tipo Invitación:"
+									style="font-weight:bold; padding-right: 0px; width: 75px" />
+
+								<p:selectOneMenu style="text-align:left;" 
+									id="pgCombo4"
+									rendered="#{invitacionesController.invitacionesModel.opcionProcesoLista}"
+									value="#{invitacionesController.invitacionesModel.busquedaSeleccionadaIntrusivoInvitacion}">
+									
+									<p:ajax event="change" process="@this" />
+
+									<f:selectItems
+										value="#{invitacionesController.invitacionesModel.listaBusquedaIntrusivoInvitacion}"
+										var="busquedaIntrusivoInvitacion"
+										itemValue="#{busquedaIntrusivoInvitacion.id}"
+										itemLabel="#{busquedaIntrusivoInvitacion.descripcion}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+								<p:outputLabel value="Activo:"
+									style="font-weight:bold; padding-right: 0px; width: 75px" />
+
+								<p:selectOneMenu style="text-align:left;" id="pgCombo5"
+									value="#{invitacionesController.invitacionesModel.busquedaSeleccionadaActivoInvitacion}">
+
+									<f:selectItems
+										value="#{invitacionesController.invitacionesModel.listaBusquedaActivoInvitacion}"
+										var="busquedaActivoInvitacion"
+										itemValue="#{busquedaActivoInvitacion.id}"
+										itemLabel="#{busquedaActivoInvitacion.descripcion}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+							
+							<p:panelGrid columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+								<p:outputLabel value="Estado:"
+									style="font-weight:bold; padding-right: 0px; width: 75px" />
+
+								<p:selectOneMenu style="text-align:left;" id="pgCombo3"
+									value="#{invitacionesController.invitacionesModel.busquedaSeleccionadaEstadoInvitacion}">
+
+									<f:selectItems
+										value="#{invitacionesController.invitacionesModel.listaBusquedaEstadoInvitacion}"
+										var="busquedaEstadoInvitacion"
+										itemValue="#{busquedaEstadoInvitacion.id}"
+										itemLabel="#{busquedaEstadoInvitacion.descripcion}" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+							
+							<p:panelGrid id="pgBotones" columns="2"
+								style="padding-right: 0px; width: 90px; margin-right: 20px;">
+
+								<p:commandButton value="Buscar" id="buscarInvitacion"
+									actionListener="#{invitacionesController.buscarInvitaciones}"
+									update="formInvitacionesbandeja:pgTotal formInvitacionesbandeja:pgConsultaInvitaciones formInvitacionesbandeja:tablaConsultaInvitaciones"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+
+
+
+
+								<p:commandButton value="Registrar" id="registrar"
+									update=":formRegistroInvitacion"
+									actionListener="#{invitacionesController.initRegistro}"
+									oncomplete="PF('registroInvitacion').show();"
+									style="margin-left: 10px" icon="#{cad['icono.buscar']}"
+									styleClass="boton-operaciones">
+
+								</p:commandButton>
+
+							</p:panelGrid>
+						</p:panelGrid>
+						<br />
+					</center>
+				</p:fieldset>
+			</p:panelGrid>
+
+
+
+
+			<p:panelGrid id="pgTotal" columns="1" style="width:100%">
+				<p:fieldset id="fieldSetTotal">
+
+
+					<p:panelGrid id="pgConsultaInvitaciones" columns="1"
+						style="width:100%">
+
+						<p:fieldset id="fieldSetConsulta">
+
+							<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+								<h:commandLink
+									actionListener="#{invitacionesController.generarReporte(1)}">
+									<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+								</h:commandLink>
+
+								<h:commandLink
+									actionListener="#{invitacionesController.generarReporte(2)}">
+									<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+								</h:commandLink>
+							</p:panelGrid>
+
+							<p:dataTable id="tablaConsultaInvitaciones"
+								value="#{invitacionesController.invitacionesModel.listaInvitaciones}"
+								var="consulta" paginator="true" paginatorPosition="bottom"
+								rows="10" style="table-layout: fixed;"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+								rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+
+								<p:columnGroup type="header">
+
+									<p:row>
+
+										<p:column rowspan="2" headerText="Código"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Invitación a"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Forma Invitación"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Tipo Invitación"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Título"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Fecha Inicio"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Fecha Fin"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Máximo Diario"
+											style="text-align:center;vertical-align: middle" />
+	
+										<p:column rowspan="2" headerText="Frecuencia"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Edades"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Entidad"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Banca Celular"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Clave Internet"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Activo"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Estado"
+											style="text-align:center;vertical-align: middle" />
+										
+										<p:column rowspan="2" headerText="Acción"
+											style="text-align:center;vertical-align: middle" />
+									</p:row>
+
+								</p:columnGroup>
+								<p:column rowspan="2" headerText="Código"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.codInvitacionForma}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Invitación a"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.tipoInvitacionDesc}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Forma Invitación"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.formaInvitacionDesc}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Tipo Invitación"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.desProceso}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Título"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.titulo}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Fecha Inicio"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.fechIniVigencia}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Fecha Fin"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.fechFinVigencia}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Máximo Diario"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.diaMaximo}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Frecuencia"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.frecuencia}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Edades"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.descRangoEdad}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Entidad"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.descFlagEntidad}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Banca Celular"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.descFlagBancaCelular}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Clave Internet"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.descFlagInternet}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Activo"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.desEstadoInvitacion}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Estado"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.estadoVigencia}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Acción"
+									style="text-align:left;vertical-align: middle">
+
+
+									<p:commandButton icon="#{cad['icono.modificar']}"
+										disabled="#{consulta.estadoVigencia == 'Cerrado'}"
+										oncomplete="actualizarInvitacion.show();"
+										update=":formActualizaInvitacion"
+										actionListener="#{invitacionesController.cargarDatosActualizarInvitacion(consulta)}">
+									</p:commandButton>
+
+									<p:commandButton icon="#{cad['icono.descargar']}"
+										oncomplete="duplicarInvitacion.show();"
+										update=":formDuplicarInvitacion"
+										actionListener="#{invitacionesController.cargarDatosDuplicarInvitacion(consulta)}">
+									</p:commandButton>
+
+
+								</p:column>
+							</p:dataTable>
+						</p:fieldset>
+					</p:panelGrid>
+
+				</p:fieldset>
+
+			</p:panelGrid>
+
+		</h:form>
+
+		<p:dialog header="Registro de Invitacion" id="dialogBlock"
+			widgetVar="registroInvitacion" modal="true" closable="true"
+			appendTo="@(body)" resizable="false" closeOnEscape="true"
+			draggable="false" position="center" showEffect="fade"
+			hideEffect="fade"
+			style="overflow-y: scroll!important; max-height: 500px">
+			<p:ajax event="close" />
+
+			<h:form id="formRegistroInvitacion">
+
+				<br></br>
+
+				<div class="div-contenedor"
+					style="padding: 5px 10px; border: 1px solid #333; width: 700px;">
+
+					<div class="div-1"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+
+						<div class="div-1-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Información General</h6>
+						</div>
+						<div class="div-1-form" style="padding: 0px 10px">
+
+							<div class="div-1-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<div class="div-1-input"
+									style="width: 60%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<label for="fname"
+										style="width: 127px; margin: 0px; padding-top: 15px">Forma
+										Invitación</label>
+
+									<div id="test" style="width: 60%; display: flex;">
+
+										<p:panelGrid columns="1"
+											style="width: 50%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+											<p:selectOneMenu
+												style="text-align:left;  width: 100%; margin: 0px;"
+												id="pgRComboForma"
+												value="#{invitacionesController.invitacionesModel.busqSeleccionadaFormaInvitacion}">
+
+												<p:ajax event="change" process="@this"
+													listener="#{invitacionesController.obtenerOpcionProcesoReg}"
+													update=":formRegistroInvitacion:pgComboProceso" />
+
+												<f:selectItems
+													value="#{invitacionesController.invitacionesModel.listaBusqFormaInvitacion}"
+													var="busqFormaInvitacion"
+													itemValue="#{busqFormaInvitacion.id}"
+													itemLabel="#{busqFormaInvitacion.descripcion}"
+													onChange="jsFunction()" id="cargarProceso" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+
+										<p:panelGrid id="pgComboProceso" columns="1"
+											style="width: 50%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+											<p:selectOneMenu
+												style="text-align:left; width: 100%; margin: 0px 10px; "
+												id="pgRComboProceso"
+												rendered="#{invitacionesController.invitacionesModel.opcionProcesoRegistro}"
+												value="#{invitacionesController.invitacionesModel.busqSeleccionadaProcesoInvitacion}">
+
+												<p:ajax event="change" process="@this" />
+
+												<f:selectItems
+													value="#{invitacionesController.invitacionesModel.listaBusqProcesoInvitacion}"
+													var="busqProcesoInvitacion"
+													itemValue="#{busqProcesoInvitacion.id}"
+													itemLabel="#{busqProcesoInvitacion.descripcion}" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+
+										<script type="text/javascript">
+											$(document)
+													.ready(
+															function() {
+																$(
+																		'#cargarProceso')
+																		.click(
+																				function() {
+																					var refreshId = setInterval(
+																							function() {
+																								$(
+																										'#dvProceso')
+																										.load(
+																												'registroInvitacion');//actualizas el div
+																							},
+																							1000);
+																				});
+															});
+										</script>
+
+										<script type="text/javascript">
+											$(document).ready(function() {
+												$('#limpiar').click(function() {
+													$('p:inputText').val('');
+												});
+											});
+										</script>
+
+
+										<script type="text/javascript">
+											$(document).ready(function() {
+												$('#limpiar').click(function() {
+													$('p:inputText').val('');
+												});
+											});
+										</script>
+
+									</div>
+								</div>
+
+								<div class="div-1-input"
+									style="width: 40%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<label for="fname"
+										style="width: 40%; margin: 0px; padding-top: 15px;">Invitación
+										a</label>
+
+									<p:selectOneMenu style="text-align:left;" id="pgComboTipo"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaTipoInvitacion}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqTipoInvitacion}"
+											var="busqTipoInvitacion" itemValue="#{busqTipoInvitacion.id}"
+											itemLabel="#{busqTipoInvitacion.descripcion}" />
+
+									</p:selectOneMenu>
+
+								</div>
+
+								<div class="div-1-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; margin: 10px 0px;">
+
+									<label for="fname" style="width: 20%; margin: 0px;">Título</label>
+
+									<p:inputText id="txtTitulo" style="width:75%" required="true"
+										title="Mensaje" requiredMessage="Debe ingresar un titulo"
+										label="#{mensaje.txtTitulo}"
+										value="#{invitacionesController.invitacionesModel.titulo}">
+										<f:validateLength minimum="3"
+											requiredMessage="Debe ingresar mayor a 3 carateres"></f:validateLength>
+									</p:inputText>
+
+								</div>
+								<div class="div-1-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; margin: 10px 0px;">
+									<label for="fname" style="width: 20%; margin: 0px;">Detalle</label>
+
+									<p:inputText id="txtDetalle" rows="2" cols="50"
+										style="width:75%;"
+										value="#{invitacionesController.invitacionesModel.detalle}">
+									</p:inputText>
+
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="div-2"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+
+						<div class="div-2-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Vigencia</h6>
+						</div>
+
+						<div class="div-2-form" style="padding: 0px 0px">
+							<div class="div-2-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<div class="div-2-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px; ">
+
+									<label for="fname" style="width: 40%; margin: 0px; padding-left: 10px; padding-right: 0px;">Fecha
+										Inicio</label>
+
+									<p:calendar locale="es" id="maskFI" readonlyInput="true"
+										style="width: 50%; padding-left: 0px; padding-right: 0px;"
+										value="#{invitacionesController.invitacionesModel.fechaInicio}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true"
+										mindate="today+1">
+
+										<p:ajax event="dateSelect"
+											listener="#{invitacionesController.validaFechaReg}"
+											update="formRegistroInvitacion:maskFI formRegistroInvitacion:maskFF" />
+									</p:calendar>
+
+								</div>
+
+								<div class="div-2-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px; padding-left: 0px; padding-right: 0px;">
+									
+									<label for="fname" style="width: 39%; margin: 0px; padding-left: 5px; padding-right: 0px;">Fecha
+										Fin</label>
+
+									<p:calendar locale="es" id="maskFF" readonlyInput="true"
+										style="width: 50%; padding-left: 0px; padding-right: 0px;"
+										value="#{invitacionesController.invitacionesModel.fechaFin}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true"
+										mindate="today+1">
+										<p:ajax event="dateSelect"
+											listener="#{invitacionesController.validaFechaReg}"
+											update="formRegistroInvitacion:maskFI formRegistroInvitacion:maskFF" />
+
+									</p:calendar>
+
+
+								</div>
+
+								
+								<p:panelGrid id="pgPanelRegistroFrecu" columns="6"
+									style="width:100%; padding-left: 0px; padding-right: 0px;">
+								
+									<h:outputLabel id="pgLabelMaxDiario"
+											style="width: 100%; margin: 0px; 
+													padding: 0px; 
+													padding-left: 0px; padding-right: 40px"
+											value="Máximo diario" />
+										
+	
+									<p:spinner id="rMaxDia" 
+										style="width: 90; padding-right: 0px; padding-left: 0px;"
+										value="#{invitacionesController.invitacionesModel.maxDia}"
+										min="1" max="10" rotate="true" />
+	
+									
+									<h:outputLabel id="pgLabelFreBlan"
+										style="width: 10%; padding: 0px 0px; padding-right: 0px; padding-left: 30px; 
+										margin: 0px; color: #333;"
+										value="" />
+									
+									
+	
+									<h:outputLabel id="pgLabelFrecuencia"
+										style="width: 20%; margin: 0px; padding-left: 0px; padding-right: 50px"
+										value="Frecuencia " />
+	
+	
+									<p:spinner id="rFrecu" style="width: 90; padding-left: 0px; padding-right: 0px;"
+										value="#{invitacionesController.invitacionesModel.frecuencia}"
+										min="1" max="30" rotate="true" />
+	
+									<h:outputLabel id="pgLabelDias"
+										style="width: 10%; padding: 0px 3px; margin: 0px; color: #333;"
+										value="(días)" />
+									
+								</p:panelGrid>
+									
+									
+								<!--</div> -->
+							</div>
+						</div>
+					</div>
+
+					<div id="divEdad" class="div-3"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-3-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Condición de Edad</h6>
+						</div>
+						<div class="div-3-form" style="padding: 0px 0px">
+
+
+
+							<div class="div-3-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<p:panelGrid id="pgPanel100" columns="2">
+									<div class="div-1-input"
+										style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+										<label for="fname"
+											style="width: 20%; margin: 0px; padding: 0px; padding-left: 0px; padding-right: 80px">Rango</label>
+
+										<p:selectOneMenu style="text-align:left;" id="pgRComboRango"
+											value="#{invitacionesController.invitacionesModel.busqSeleccionadaRangoEdadInvitacion}">
+
+											<p:ajax event="change"
+												listener="#{invitacionesController.obtenerOpcionRangoEdadReg}"
+												update="formRegistroInvitacion:pgPanelRegistroEdad formRegistroInvitacion:pgLabelEdadDesde formRegistroInvitacion:rAnoIni formRegistroInvitacion:pgLabelAnosDesde formRegistroInvitacion:pgLabelEdadHasta formRegistroInvitacion:rAnoFin formRegistroInvitacion:pgLabelAnosHasta" />
+
+
+											<f:selectItems
+												value="#{invitacionesController.invitacionesModel.listaBusqRangoEdadInvitacion}"
+												var="busqRangoEdadInvitacion"
+												itemValue="#{busqRangoEdadInvitacion.id}"
+												itemLabel="#{busqRangoEdadInvitacion.descripcion}" />
+										</p:selectOneMenu>
+
+
+
+									</div>
+								</p:panelGrid>
+
+								<p:panelGrid id="pgPanelRegistroEdad" columns="6"
+									style="width:100%;  padding: 0px 0px; padding-left: 0px;">
+
+
+									<h:outputLabel id="pgLabelEdadDesde"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoRegistro}"
+										style="width: 100%; margin: 0px; padding: 0px; padding-left: 0px; padding-right: 70px"
+										value="Desde " />
+
+									<p:spinner id="rAnoIni"
+										style="width: 90; 
+												    padding-right: 0px;
+												    padding-left: 0px;
+														        									"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoRegistro}"
+										value="#{invitacionesController.invitacionesModel.anoInicial}"
+										min="18" max="99" rotate="true">
+										<p:ajax
+											listener="#{invitacionesController.validaNumeroRegistro()}"
+											update="formRegistroInvitacion:rAnoIni formRegistroInvitacion:rAnoFin" />
+									</p:spinner>
+
+									<h:outputLabel id="pgLabelAnosDesde"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoRegistro}"
+										style="width: 10%; padding: 0px 0px; padding-right: 0px; padding-left: 0px; margin: 0px; color: #333;"
+										value="Años" />
+
+
+									<h:outputLabel id="pgLabelEdadHasta"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoRegistro}"
+										style="width: 20%; margin: 0px; padding-left: 0px; padding-right: 70px"
+										value="Hasta " />
+
+									<p:spinner id="rAnoFin"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoRegistro}"
+										style="width: 90;"
+										value="#{invitacionesController.invitacionesModel.anoFinal}"
+										min="18" max="99" rotate="true">
+
+										<p:ajax
+											listener="#{invitacionesController.validaNumeroRegistro()}"
+											update="formRegistroInvitacion:rAnoIni formRegistroInvitacion:rAnoFin" />
+									</p:spinner>
+
+									<h:outputLabel id="pgLabelAnosHasta"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoRegistro}"
+										style="width: 10%; padding: 0px 3px; margin: 0px; color: #333;"
+										value="Años" />
+
+
+								</p:panelGrid>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="div-4"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-4-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Entidades</h6>
+						</div>
+
+						<div class="div-4-form" style="padding: 0px 0px">
+
+							<div class="div-4-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<p:panelGrid id="pgEntidad" columns="2"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname"
+										style="width: 100%; margin: 0px; padding-left: 0px; padding-right: 50px">Por
+										Entidad</label>
+
+									<p:selectOneMenu style="padding-left: 0px; padding-right: 0px"
+										id="pgRComboEntidad"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaRangoEntidadInvitacion}">
+
+										<p:ajax event="change"
+											listener="#{invitacionesController.obtenerOpcionEntidadReg}"
+											update="formRegistroInvitacion:pgEntidadAccion formRegistroInvitacion:pgRegEntidadbusquedaLabel formRegistroInvitacion:pgRegEntidadbusquedaTexto formRegistroInvitacion:pgRegEntidadbusquedaBoton formRegistroInvitacion:pgRegEntidadbusquedaAdvertencia formRegistroInvitacion:pgRegEntidadbusquedaResultado" />
+
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqRangoEntidadInvitacion}"
+											var="busqRangoEntidadInvitacion"
+											itemValue="#{busqRangoEntidadInvitacion.id}"
+											itemLabel="#{busqRangoEntidadInvitacion.descripcion}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid id="pgEntidadAccion" columns="2"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<h:outputLabel id="pgLabelTipoAccion"
+										rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+										style="width: 20%; 
+			                                		margin: 0px; 
+			                                		padding-left: 0px; 
+			                                		padding-right: 45px"
+										value="Tipo Acción" />
+
+									<p:selectOneMenu id="pgRComboAccion"
+										style="
+			                            		 
+			                            				padding-left: 0px; 
+			                            				padding-right: 18px"
+										rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaInclusivoEntidadInvitacion}"
+										 >
+										<p:ajax listener="#{invitacionesController.eliminarTodasEntidades}" update="formRegistroInvitacion:tablaConsultaEntidad"/>
+										<f:selectItems style="	width: 100%; "
+											value="#{invitacionesController.invitacionesModel.listaBusqInclusivoEntidadInvitacion}"
+											var="busqInclusivoEntidadInvitacion"
+											itemValue="#{busqInclusivoEntidadInvitacion.id}"
+											itemLabel="#{busqInclusivoEntidadInvitacion.descripcion}" />
+											
+									</p:selectOneMenu>
+
+
+								</p:panelGrid>
+
+
+								<div class="div-4-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px 5px;">
+
+									<p:panelGrid id="pgRegEntidadbusquedaLabel" columns="1"
+										style="width: 20%; padding-left: 0px; padding-right: 0px">
+										<h:outputLabel id="pgLabelEntidad"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+											value="Entidad" />
+									</p:panelGrid>
+
+									<p:panelGrid id="pgRegEntidadbusquedaTexto" columns="1"
+										style="width: 60%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+
+
+										<p:selectOneMenu id="advanced"
+											style="padding-left: 0px; padding-right: 0px"
+											panelStyle="width:380px" effect="fade" var="t" filter="true"
+											filterMatchMode="contains"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+											value="#{invitacionesController.invitacionesModel.codigoEntidad}">
+
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems
+												value="#{invitacionesController.invitacionesModel.listaEntidadVista}"
+												var="entidadVista" itemValue="#{entidadVista.code}"
+												itemLabel="#{entidadVista.description}" />
+										</p:selectOneMenu>
+
+
+
+
+
+									</p:panelGrid>
+									<p:panelGrid id="pgRegEntidadbusquedaBoton" columns="1"
+										style="width: 10%; padding-left: 0px; padding-right: 0px">
+										<p:commandButton id="btnAgregarEntidadReg"
+											style="padding-left: 0px; padding-right: 0px"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+											action="#{invitacionesController.agregarEntidad}"
+											update="formRegistroInvitacion:tablaConsultaEntidad"
+											value="Agregar" />
+									</p:panelGrid>
+
+								</div>
+
+
+								<div class="div-4-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 5px 0px;">
+
+									<p:panelGrid id="pgRegEntidadbusquedaAdvertencia" columns="1">
+
+										<h:outputLabel id="pgLabelAdvertencia"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+											style="width: 100%; margin: 0px; color:#98002e; padding: 5px 0px;"
+											value="*Máximo 10 entidades" />
+											
+										<h:outputLabel id="msjInfoEntidadesExcluidas"											
+											style="width: 100%; margin: 0px; color:#98002e; padding: 5px 0px;"
+											value="#{invitacionesController.invitacionesModel.msjInfoEntidadesExcluidas}" />
+									</p:panelGrid>
+
+									<p:panelGrid id="pgRegEntidadbusquedaResultado" columns="1">
+
+
+										<div style="width: 100%;">
+
+											<p:dataTable id="tablaConsultaEntidad"
+												rendered="#{invitacionesController.invitacionesModel.opcionEntidadRegistro}"
+												value="#{invitacionesController.invitacionesModel.listaAgregado}"
+												var="consultaEntidad" rows="10" style="table-layout: fixed;"
+												rowIndexVar="index"
+												selection="#{invitacionesController.invitacionesModel.objetoSeleccionado}"
+												scrollable="true" scrollHeight="150">
+
+												<p:columnGroup type="header">
+
+													<p:row>
+
+														<p:column rowspan="2" headerText="Entidad"
+															style="text-align:center;vertical-align: middle;width: 80px;" />
+
+														<p:column rowspan="2" headerText="Descripción Entidad"
+															style="text-align:center;vertical-align: middle ;width: 250px;" />
+
+														<p:column rowspan="2" headerText="Acción"
+															style="text-align:center;vertical-align: middle;width: 80px;" />
+													</p:row>
+
+												</p:columnGroup>
+												<p:column rowspan="2" headerText="Entidad"
+													style="text-align:center;vertical-align: middle">
+													<h:outputText value="#{consultaEntidad.code}" />
+												</p:column>
+												<p:column rowspan="2" headerText="Descripción Entidad"
+													style="text-align:center;vertical-align: middle">
+													<h:outputText value="#{consultaEntidad.name}" />
+												</p:column>
+
+												<p:column rowspan="2" headerText="Acción"
+													style="text-align:center;vertical-align: middle">
+													<p:commandButton icon="#{cad['icono.cancelar']}"
+														action="#{invitacionesController.eliminarEntidad(consultaEntidad.code)}"
+														update=":formRegistroInvitacion:tablaConsultaEntidad">
+													</p:commandButton>
+
+												</p:column>
+											</p:dataTable>
+
+
+										</div>
+									</p:panelGrid>
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+
+					<div class="div-5"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-5-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Condiciones Adicionales</h6>
+						</div>
+						<div class="div-3-form" style="padding: 0px 0px 8px;">
+							<div class="div-3-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<div class="div-1-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 40%; margin: 0px;">Clave
+										Internet</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgComboClaveIntReg"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaClaveInternetInvitacion}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqClaveInternetInvitacion}"
+											var="busqClaveInternetInvitacion"
+											itemValue="#{busqClaveInternetInvitacion.id}"
+											itemLabel="#{busqClaveInternetInvitacion.descripcion}" />
+									</p:selectOneMenu>
+
+								</div>
+								<div class="div-1-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 40%; margin: 0px;">Banca
+										Celular</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgComboBancaCel"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaBancaCelularInvitacion}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqBancaCelularInvitacion}"
+											var="busqBancaCelularInvitacion"
+											itemValue="#{busqBancaCelularInvitacion.id}"
+											itemLabel="#{busqBancaCelularInvitacion.descripcion}" />
+
+									</p:selectOneMenu>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="div-activo" style="margin: 5px 0px;">
+
+						<div class="div-activo-form">
+							<div class="div-activo-form-row "
+								style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+								<div class="div-activo-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+
+									<label for="Activo" style="margin: 0px; padding: 0px 5px;">
+										Activo</label>
+									<p:selectBooleanCheckbox
+										value="#{invitacionesController.invitacionesModel.activo}" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="div-btn" style="margin: 0px 0px; padding: 0px;">
+
+						<div class="div-btn-form">
+							<div class="div-btn-form-row "
+								style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+								<div class="div-btn-input"
+									style="width: 20%; padding: 5px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+
+									<p:commandButton value="Registrar" style="width:100%;"
+										id="registrarInvitacion"
+										actionListener="#{invitacionesController.agregarInvitacion}"
+										icon="#{cad['icono.guardar']}" styleClass="boton-operaciones"
+										update=":formInvitacionesbandeja" />
+								</div>
+
+								<div class="div-btn-input"
+									style="width: 20%; padding: 5px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+									<p:commandButton value="Salir"
+										style="width:100%; background: #CDCDCD!important;"
+										onclick="registroInvitacion.hide();" />
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+
+
+
+				<br />
+			</h:form>
+
+		</p:dialog>
+
+
+
+
+
+		<p:dialog header="Actualización de Invitacion" id="dialogBlockAct"
+			widgetVar="actualizarInvitacion" modal="true" closable="true"
+			appendTo="@(body)" resizable="false" closeOnEscape="true"
+			draggable="false" position="center" showEffect="fade"
+			hideEffect="fade" style="overflow: auto;max-height: 500px;">
+			<p:ajax event="close" />
+
+
+
+			<h:form id="formActualizaInvitacion">
+
+
+
+				<br></br>
+
+
+				<div class="div-contenedor"
+					style="padding: 5px 10px; border: 1px solid #333; width: 700px;">
+					<center>
+
+						<h:outputLabel
+							style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;"
+							value="Codigo: " />
+						<h:outputLabel id="codigoRegistroAct"
+							style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;"
+							value="#{invitacionesController.invitacionesModel.codeInvitacionMod}" />
+
+					</center>
+					<div class="div-1"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+
+						<div class="div-1-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Información General</h6>
+						</div>
+						<div class="div-1-form" style="padding: 0px 10px">
+
+
+
+							<div class="div-1-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<div class="div-1-input"
+									style="width: 60%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<label for="fname"
+										style="width: 127px; margin: 0px; padding-top: 15px">Forma
+										Invitación</label>
+
+									<div style="width: 60%; display: flex;">
+
+										<p:panelGrid columns="1"
+											style="width: 50%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+											<p:selectOneMenu
+												style="text-align:left;  width: 100%; margin: 0px;"
+												id="pgAComboForma"
+												value="#{invitacionesController.invitacionesModel.busqSeleccionadaFormaInvitacionMod}">
+
+												<p:ajax event="change"
+													listener="#{invitacionesController.obtenerOpcionProcesoMod}"
+													update="formActualizaInvitacion:pgComboProcesoActualizar" />
+
+												<f:selectItems
+													value="#{invitacionesController.invitacionesModel.listaBusqFormaInvitacionMod}"
+													var="busqFormaInvitacionMod"
+													itemValue="#{busqFormaInvitacionMod.id}"
+													itemLabel="#{busqFormaInvitacionMod.descripcion}"
+													onChange="jsFunction()" id="limpiar" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+
+										<p:panelGrid id="pgComboProcesoActualizar" columns="1"
+											style="width: 50%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+											<p:selectOneMenu
+												style="text-align:left; width: 100%; margin: 0px 10px; "
+												id="pgAComboProceso"
+												rendered="#{invitacionesController.invitacionesModel.opcionProceso}"
+												value="#{invitacionesController.invitacionesModel.busqSeleccionadaProcesoInvitacionMod}">
+
+												<p:ajax event="change" process="@this"
+													update="formActualizaInvitacion:pgAComboProceso" />
+
+												<f:selectItems
+													value="#{invitacionesController.invitacionesModel.listaBusqProcesoInvitacionMod}"
+													var="busqProcesoInvitacionMod"
+													itemValue="#{busqProcesoInvitacionMod.id}"
+													itemLabel="#{busqProcesoInvitacionMod.descripcion}" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+
+										<script type="text/javascript">
+											$(document).ready(function() {
+												$('#limpiar').click(function() {
+													$('p:inputText').val('');
+												});
+											});
+										</script>
+
+									</div>
+								</div>
+								<div class="div-1-input"
+									style="width: 40%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname"
+										style="width: 40%; margin: 0px; padding-top: 15px;">Invitación
+										a</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgAComboTipo"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaTipoInvitacionMod}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqTipoInvitacionMod}"
+											var="busqTipoInvitacionMod"
+											itemValue="#{busqTipoInvitacionMod.id}"
+											itemLabel="#{busqTipoInvitacionMod.descripcion}" />
+
+									</p:selectOneMenu>
+								</div>
+								<div class="div-1-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; margin: 10px 0px;">
+									<label for="fname" style="width: 20%; margin: 0px;">Título</label>
+
+									<p:inputText id="txtATitulo"
+										value="#{invitacionesController.invitacionesModel.tituloMod}"
+										style="width:75%">
+									</p:inputText>
+
+								</div>
+								<div class="div-1-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; margin: 10px 0px;">
+									<label for="fname" style="width: 20%; margin: 0px;">Detalle</label>
+									<p:inputText id="txtADetalle" rows="2" cols="50"
+										style="width:75%;"
+										value="#{invitacionesController.invitacionesModel.detalleMod}">
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="div-2"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+
+						<div class="div-2-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Vigencia</h6>
+						</div>
+
+						<div class="div-2-form" style="padding: 0px 0px">
+							<div class="div-2-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<div class="div-2-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 36%; margin: 10px; ">Fecha
+										Inicio</label>
+
+									<p:calendar locale="es" id="maskAFI" readonlyInput="true"
+										style="width: 50%;"
+										value="#{invitacionesController.invitacionesModel.fechaInicioMod}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true"
+										mindate="today+1">
+										<p:ajax event="dateSelect"
+											listener="#{invitacionesController.validaFechaAct}"
+											update="formActualizaInvitacion:maskAFI formActualizaInvitacion:maskAFF" />
+									</p:calendar>
+								</div>
+
+								<div class="div-2-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 39%; margin: 0px; padding-left: 5px; padding-right: 0px;">Fecha
+										Fin</label>
+
+									<p:calendar locale="es" id="maskAFF" readonlyInput="true"
+										style="width: 50%;"
+										value="#{invitacionesController.invitacionesModel.fechaFinMod}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true"
+										mindate="today+1">
+										<p:ajax event="dateSelect"
+											listener="#{invitacionesController.validaFechaAct}"
+											update="formActualizaInvitacion:maskAFI formActualizaInvitacion:maskAFF" />
+									</p:calendar>
+
+								</div>
+								
+								<p:panelGrid id="pgPanelModFrecu" columns="6"
+									style="width:100%; padding-left: 0px; padding-right: 0px;">
+								
+									<h:outputLabel id="pgLabelMaxDiarioMod"
+											style="width: 100%; margin: 0px; 
+													padding: 0px; 
+													padding-left: 0px; padding-right: 40px"
+											value="Máximo diario" />
+	
+									<p:spinner id="rAMaxDia" 
+										style="width: 90; padding-right: 0px; padding-left: 0px;"
+										value="#{invitacionesController.invitacionesModel.maxDiaMod}"
+										min="1" max="10" rotate="true" />
+										
+									<h:outputLabel id="pgLabelFreBlanMod"
+										style="width: 10%; padding: 0px 0px; padding-right: 0px; padding-left: 30px; 
+										margin: 0px; color: #333;"
+										value="" />
+	
+									<h:outputLabel id="pgLabelFrecuenciaMod"
+										style="width: 20%; margin: 0px; padding-left: 0px; padding-right: 50px"
+										value="Frecuencia " />
+	
+	
+									<p:spinner id="rAFrecu" style="width: 90; padding-left: 0px; padding-right: 0px;"
+										value="#{invitacionesController.invitacionesModel.frecuenciaMod}"
+										min="1" max="30" rotate="true" />
+	
+									<h:outputLabel id="pgLabelDiasMod"
+										style="width: 10%; padding: 0px 3px; margin: 0px; color: #333;"
+										value="(días)" />
+									
+								</p:panelGrid>
+	
+								
+								
+								
+								
+								
+								
+								
+								
+								
+							</div>
+						</div>
+					</div>
+
+					<div class="div-3"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-3-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Condición de Edad</h6>
+						</div>
+						<div class="div-3-form" style="padding: 0px 0px">
+							<div class="div-3-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<p:panelGrid columns="2">
+									<div class="div-1-input"
+										style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+										<label for="fname"
+											style="width: 20%; margin: 0px; padding: 0px; padding-left: 0px; padding-right: 80px">Rango</label>
+
+
+										<p:selectOneMenu style="text-align:left;" id="pgAComboRango"
+											value="#{invitacionesController.invitacionesModel.busqSeleccionadaRangoEdadInvitacionMod}">
+
+											<p:ajax event="change"
+												listener="#{invitacionesController.obtenerOpcionRangoEdadMod}"
+												update="formActualizaInvitacion:pgPanelActualizaEdad formActualizaInvitacion:rAAnoIni formActualizaInvitacion:pgALabelEdadDesde formActualizaInvitacion:pgALabelAnosDesde formActualizaInvitacion:pgALabelEdadHasta formActualizaInvitacion:rAAnoFin formActualizaInvitacion:pgALabelAnosHasta" />
+
+											<f:selectItems
+												value="#{invitacionesController.invitacionesModel.listaBusqRangoEdadInvitacionMod}"
+												var="busqRangoEdadInvitacionMod"
+												itemValue="#{busqRangoEdadInvitacionMod.id}"
+												itemLabel="#{busqRangoEdadInvitacionMod.descripcion}" />
+										</p:selectOneMenu>
+
+
+									</div>
+								</p:panelGrid>
+
+								<p:panelGrid id="pgPanelActualizaEdad" columns="6"
+									style="width:100%;  padding: 0px 0px; padding-left: 0px;">
+
+
+									<h:outputLabel id="pgALabelEdadDesde"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoIni}"
+										style="width: 100%; margin: 0px; padding: 0px; padding-left: 0px; padding-right: 70px"
+										value="Desde " />
+
+									<p:spinner id="rAAnoIni"
+										style="width: 90; 
+												    padding-right: 0px;
+												    padding-left: 0px;"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoIni}"
+										value="#{invitacionesController.invitacionesModel.anoInicialMod}"
+										min="18" max="99" rotate="true">
+										<p:ajax
+											listener="#{invitacionesController.validaNumeroActualizar()}"
+											update="formActualizaInvitacion:rAAnoIni formActualizaInvitacion:rAAnoFin" />
+									</p:spinner>
+
+									<h:outputLabel id="pgALabelAnosDesde"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoIni}"
+										style="width: 10%; padding: 0px 0px; padding-right: 0px; padding-left: 0px; margin: 0px; color: #333;"
+										value="Años" />
+
+
+									<h:outputLabel id="pgALabelEdadHasta"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoIni}"
+										style="width: 20%; margin: 0px; padding-left: 0px; padding-right: 70px"
+										value="Hasta " />
+
+									<p:spinner id="rAAnoFin"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoIni}"
+										style="width: 90;"
+										value="#{invitacionesController.invitacionesModel.anoFinalMod}"
+										min="18" max="99" rotate="true">
+										<p:ajax
+											listener="#{invitacionesController.validaNumeroActualizar()}"
+											update="formActualizaInvitacion:rAAnoIni formActualizaInvitacion:rAAnoFin" />
+									</p:spinner>
+
+									<h:outputLabel id="pgALabelAnosHasta"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoIni}"
+										style="width: 10%; padding: 0px 3px; margin: 0px; color: #333;"
+										value="Años" />
+
+								</p:panelGrid>
+
+							</div>
+						</div>
+					</div>
+
+
+					<div class="div-4"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-4-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Entidades</h6>
+						</div>
+						<div class="div-4-form" style="padding: 0px 10px">
+							<div class="div-4-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+
+								<p:panelGrid id="pgEntidadMod" columns="2"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<label for="fname"
+										style="width: 100%; margin: 0px; padding-left: 0px; padding-right: 50px">Por
+										Entidad</label>
+
+									<p:selectOneMenu style="padding-left: 0px; padding-right: 0px"
+										id="pgAComboEntidad"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaRangoEntidadInvitacionMod}">
+
+										<p:ajax event="change"
+											listener="#{invitacionesController.obtenerOpcionEntidadMod}"
+											update="formActualizaInvitacion:pgModEntidadAccion formActualizaInvitacion:pgModEntidadbusquedaLabel formActualizaInvitacion:pgModEntidadbusquedaTexto formActualizaInvitacion:pgModEntidadbusquedaBoton formActualizaInvitacion:pgModEntidadbusquedaAdvertencia formActualizaInvitacion:pgModEntidadbusquedaResultado
+														
+														
+														" />
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqRangoEntidadInvitacionMod}"
+											var="busqRangoEntidadInvitacionMod"
+											itemValue="#{busqRangoEntidadInvitacionMod.id}"
+											itemLabel="#{busqRangoEntidadInvitacionMod.descripcion}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+
+
+								<p:panelGrid id="pgModEntidadAccion" columns="2"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<h:outputLabel id="pgALabelTipoAccion"
+										rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+										style="width: 20%; 
+			                                		margin: 0px; 
+			                                		padding-left: 0px; 
+			                                		padding-right: 45px"
+										value="Tipo Acción" />
+
+									<p:selectOneMenu id="pgAComboAccion"
+										style="padding-left: 0px; 
+			                            				padding-right: 18px"
+										rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaInclusivoEntidadInvitacionMod}">
+
+										<f:selectItems style="	width: 100%; "
+											value="#{invitacionesController.invitacionesModel.listaBusqInclusivoEntidadInvitacionMod}"
+											var="busqInclusivoEntidadInvitacionMod"
+											itemValue="#{busqInclusivoEntidadInvitacionMod.id}"
+											itemLabel="#{busqInclusivoEntidadInvitacionMod.descripcion}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+
+
+
+								<div class="div-4-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px 5px;">
+
+									<p:panelGrid id="pgModEntidadbusquedaLabel" columns="1"
+										style="width: 20%; padding-left: 0px; padding-right: 0px">
+
+										<h:outputLabel id="pgALabelEntidad"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+											style="width: 20%; margin: 0px;" value="Entidad" />
+									</p:panelGrid>
+
+									<p:panelGrid id="pgModEntidadbusquedaTexto" columns="1"
+										style="width: 60%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+										<p:selectOneMenu id="advanced"
+											style="padding-left: 0px; padding-right: 0px"
+											panelStyle="width:380px" effect="fade" var="t" filter="true"
+											filterMatchMode="contains"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+											value="#{invitacionesController.invitacionesModel.codigoEntidad}">
+
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems
+												value="#{invitacionesController.invitacionesModel.listaEntidadVista}"
+												var="entidadVista" itemValue="#{entidadVista.code}"
+												itemLabel="#{entidadVista.description}" />
+										</p:selectOneMenu>
+
+
+									</p:panelGrid>
+									<p:panelGrid id="pgModEntidadbusquedaBoton" columns="1"
+										style="width: 10%; padding-left: 0px; padding-right: 0px">
+										<p:commandButton id="btnAgregarEntidadMod"
+											style="padding-left: 0px; padding-right: 0px"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+											value="Agregar"
+											action="#{invitacionesController.agregarEntidad}"
+											update="formActualizaInvitacion:tablaConsultaEntidadAct" />
+
+									</p:panelGrid>
+								</div>
+
+
+								<div class="div-4-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 5px 0px;">
+
+									<p:panelGrid id="pgModEntidadbusquedaAdvertencia" columns="1">
+										<h:outputLabel id="pgALabelAdvertencia"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+											style="width: 100%; margin: 0px; color:#98002e; padding: 5px 0px;"
+											value="*Máximo 10 entidades" />
+											
+										<h:outputLabel id="msjInfoEntidadesExcluidas"											
+											style="width: 100%; margin: 0px; color:#98002e; padding: 5px 0px;"
+											value="#{invitacionesController.invitacionesModel.msjInfoEntidadesExcluidas}" />
+									</p:panelGrid>
+
+									<p:panelGrid id="pgModEntidadbusquedaResultado" columns="1">
+
+										<div style="width: 100%;">
+
+											<p:dataTable id="tablaConsultaEntidadAct"
+												rendered="#{invitacionesController.invitacionesModel.opcionEntidad}"
+												value="#{invitacionesController.invitacionesModel.listaAgregado}"
+												var="consultaEntidadAct" rows="10"
+												style="table-layout: fixed;"
+												paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+										 	{NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+												currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+												rowsPerPageTemplate="10,20,50" rowIndexVar="index"
+												selection="#{invitacionesController.invitacionesModel.objetoSeleccionado}"
+												scrollable="true" scrollHeight="150">
+
+												<p:columnGroup type="header">
+													<p:row>
+														<p:column rowspan="2" headerText="Entidad"
+															style="text-align:center;vertical-align: middle;width: 80px;" />
+
+														<p:column rowspan="2" headerText="Descripción Entidad"
+															style="text-align:center;vertical-align: middle;width: 250px;" />
+
+														<p:column rowspan="2" headerText="Acción"
+															style="text-align:center;vertical-align: middle;width: 80px;" />
+													</p:row>
+												</p:columnGroup>
+												<p:column rowspan="2" headerText="Entidad"
+													style="text-align:center;vertical-align: middle">
+													<h:outputText value="#{consultaEntidadAct.code}" />
+												</p:column>
+												<p:column rowspan="2" headerText="Descripción Entidad"
+													style="text-align:center;vertical-align: middle">
+													<h:outputText value="#{consultaEntidadAct.name}" />
+												</p:column>
+												<p:column rowspan="2" headerText="Acción"
+													style="text-align:center;vertical-align: middle">
+													<p:commandButton icon="#{cad['icono.cancelar']}"
+														action="#{invitacionesController.eliminarEntidad(consultaEntidadAct.code)}"
+														update=":formActualizaInvitacion:tablaConsultaEntidadAct" />
+
+												</p:column>
+											</p:dataTable>
+
+										</div>
+									</p:panelGrid>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+
+					<div class="div-5"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-5-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Condiciones Adicionales</h6>
+						</div>
+						<div class="div-3-form" style="padding: 0px 10px 8px;">
+							<div class="div-3-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<div class="div-1-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 40%; margin: 0px;">Clave
+										Internet</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgAComboClaveInt"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaClaveInternetInvitacionMod}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqClaveInternetInvitacionMod}"
+											var="busqClaveInternetInvitacionMod"
+											itemValue="#{busqClaveInternetInvitacionMod.id}"
+											itemLabel="#{busqClaveInternetInvitacionMod.descripcion}" />
+									</p:selectOneMenu>
+
+
+								</div>
+								<div class="div-1-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 40%; margin: 0px;">Banca
+										Celular</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgAComboBancaCel"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaBancaCelularInvitacionMod}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqBancaCelularInvitacionMod}"
+											var="busqBancaCelularInvitacionMod"
+											itemValue="#{busqBancaCelularInvitacionMod.id}"
+											itemLabel="#{busqBancaCelularInvitacionMod.descripcion}" />
+
+									</p:selectOneMenu>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="div-activo" style="margin: 5px 0px;">
+
+						<div class="div-activo-form">
+							<div class="div-activo-form-row "
+								style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+								<div class="div-activo-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+
+									<label for="Activo" style="margin: 0px; padding: 0px 5px;">
+										Activo</label>
+									<p:selectBooleanCheckbox
+										value="#{invitacionesController.invitacionesModel.activoMod}" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="div-btn" style="margin: 0px 0px; padding: 0px;">
+
+						<div class="div-btn-form">
+							<div class="div-btn-form-row "
+								style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+								<div class="div-btn-input"
+									style="width: 20%; padding: 5px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+
+									<p:commandButton value="Actualizar" style="width:100%;"
+										id="modInvitacion"
+										actionListener="#{invitacionesController.modificarInvitacion}"
+										icon="#{cad['icono.guardar']}" styleClass="boton-operaciones"
+										update=":formInvitacionesbandeja" />
+
+
+
+								</div>
+
+								<div class="div-btn-input"
+									style="width: 20%; padding: 5px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+									<p:commandButton value="Salir"
+										style="width:100%; background: #CDCDCD!important;"
+										onclick="actualizarInvitacion.hide();" />
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>
+
+			</h:form>
+
+		</p:dialog>
+
+
+		<p:dialog header="Duplicar de Invitacion" id="dialogBlockDupli"
+			widgetVar="duplicarInvitacion" modal="true" closable="true"
+			appendTo="@(body)" resizable="false" closeOnEscape="true"
+			draggable="false" position="center" showEffect="fade"
+			hideEffect="fade" style="overflow: auto;max-height: 500px;">
+			<p:ajax event="close" />
+
+
+
+			<h:form id="formDuplicarInvitacion">
+
+
+
+				<br></br>
+
+
+				<div class="div-contenedor"
+					style="padding: 5px 10px; border: 1px solid #333; width: 700px;">
+
+					<div class="div-1"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+
+						<div class="div-1-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Información General</h6>
+						</div>
+						<div class="div-1-form" style="padding: 0px 10px">
+
+
+
+							<div class="div-1-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<div class="div-1-input"
+									style="width: 60%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<label for="fname"
+										style="width: 127px; margin: 0px; padding-top: 15px">Forma
+										Invitación</label>
+
+									<div style="width: 60%; display: flex;">
+
+										<p:panelGrid columns="1"
+											style="width: 50%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+											<p:selectOneMenu
+												style="text-align:left;  width: 100%; margin: 0px;"
+												id="pgComboFormaDupli"
+												value="#{invitacionesController.invitacionesModel.busqSeleccionadaFormaInvitacionDupli}">
+
+												<p:ajax event="change"
+													listener="#{invitacionesController.obtenerOpcionProcesoDupli}"
+													update="formDuplicarInvitacion:pgComboProcesoDuplica" />
+
+												<f:selectItems
+													value="#{invitacionesController.invitacionesModel.listaBusqFormaInvitacionDupli}"
+													var="busqFormaInvitacionDupli"
+													itemValue="#{busqFormaInvitacionDupli.id}"
+													itemLabel="#{busqFormaInvitacionDupli.descripcion}"
+													onChange="jsFunction()" id="limpiar" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+
+										<p:panelGrid id="pgComboProcesoDuplica" columns="1"
+											style="width: 50%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+											<p:selectOneMenu
+												style="text-align:left; width: 100%; margin: 0px 10px; "
+												id="pgComboProcesoDupli"
+												rendered="#{invitacionesController.invitacionesModel.opcionProcesoDupli}"
+												value="#{invitacionesController.invitacionesModel.busqSeleccionadaProcesoInvitacionDupli}">
+
+												<p:ajax event="change" process="@this"
+													update="formDuplicarInvitacion:pgComboProcesoDupli" />
+
+												<f:selectItems
+													value="#{invitacionesController.invitacionesModel.listaBusqProcesoInvitacionDupli}"
+													var="busqProcesoInvitacionDupli"
+													itemValue="#{busqProcesoInvitacionDupli.id}"
+													itemLabel="#{busqProcesoInvitacionDupli.descripcion}" />
+											</p:selectOneMenu>
+										</p:panelGrid>
+										<script type="text/javascript">
+											$(document).ready(function() {
+												$('#limpiar').click(function() {
+													$('p:inputText').val('');
+												});
+											});
+										</script>
+
+									</div>
+								</div>
+								<div class="div-1-input"
+									style="width: 40%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname"
+										style="width: 40%; margin: 0px; padding-top: 15px;">Invitación
+										a</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgComboTipoDupli"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaTipoInvitacionDupli}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqTipoInvitacionDupli}"
+											var="busqTipoInvitacionDupli"
+											itemValue="#{busqTipoInvitacionDupli.id}"
+											itemLabel="#{busqTipoInvitacionDupli.descripcion}" />
+
+									</p:selectOneMenu>
+								</div>
+								<div class="div-1-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; margin: 10px 0px;">
+									<label for="fname" style="width: 20%; margin: 0px;">Título</label>
+
+									<p:inputText id="txtTituloDupli"
+										value="#{invitacionesController.invitacionesModel.tituloDupli}"
+										style="width:75%">
+									</p:inputText>
+
+								</div>
+								<div class="div-1-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; margin: 10px 0px;">
+									<label for="fname" style="width: 20%; margin: 0px;">Detalle</label>
+									<p:inputText id="txtDetalleDupli" rows="2" cols="50"
+										style="width:75%;"
+										value="#{invitacionesController.invitacionesModel.detalleDupli}">
+									</p:inputText>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="div-2"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+
+						<div class="div-2-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Vigencia</h6>
+						</div>
+
+						<div class="div-2-form" style="padding: 0px 0px">
+							<div class="div-2-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<div class="div-2-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 36%; margin: 10px;">Fecha
+										Inicio</label>
+
+									<p:calendar locale="es" id="maskFIDupli" readonlyInput="true"
+										style="width: 50%;"
+										value="#{invitacionesController.invitacionesModel.fechaInicioDupli}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true"
+										mindate="today+1">
+
+										<p:ajax event="dateSelect"
+											listener="#{invitacionesController.validaFechaDupli}"
+											update="formDuplicarInvitacion:maskFIDupli formDuplicarInvitacion:maskFFDupli" />
+
+									</p:calendar>
+								</div>
+
+								<div class="div-2-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 39%; margin: 0px; padding-left: 5px; padding-right: 0px;">Fecha
+										Fin</label>
+
+									<p:calendar locale="es" id="maskFFDupli" readonlyInput="true"
+										style="width: 50%;"
+										value="#{invitacionesController.invitacionesModel.fechaFinDupli}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true"
+										mindate="today+1">
+
+										<p:ajax event="dateSelect"
+											listener="#{invitacionesController.validaFechaDupli}"
+											update="formDuplicarInvitacion:maskFIDupli formDuplicarInvitacion:maskFFDupli" />
+									</p:calendar>
+
+								</div>
+								
+								<p:panelGrid id="pgPanelDupliFrecu" columns="6"
+									style="width:100%; padding-left: 0px; padding-right: 0px;">
+								
+									<h:outputLabel id="pgLabelMaxDiarioDupli"
+											style="width: 100%; margin: 0px; 
+													padding: 0px; 
+													padding-left: 0px; padding-right: 40px"
+											value="Máximo diario" />
+	
+									<p:spinner id="rMaxDiaDupli" 
+										style="width: 90; padding-right: 0px; padding-left: 0px;"
+										value="#{invitacionesController.invitacionesModel.maxDiaDupli}"
+										min="1" max="10" rotate="true" />
+									
+									<h:outputLabel id="pgLabelFreBlanDupli"
+										style="width: 10%; padding: 0px 0px; padding-right: 0px; padding-left: 30px; 
+										margin: 0px; color: #333;"
+										value="" />
+	
+									<h:outputLabel id="pgLabelFrecuenciaDupli"
+										style="width: 20%; margin: 0px; padding-left: 0px; padding-right: 50px"
+										value="Frecuencia " />
+	
+									<p:spinner id="rFrecuDupli" style="width: 90; padding-left: 0px; padding-right: 0px;"
+										value="#{invitacionesController.invitacionesModel.frecuenciaDupli}"
+										min="1" max="30" rotate="true" />
+	
+									<h:outputLabel id="pgLabelDiasDupli"
+										style="width: 10%; padding: 0px 3px; margin: 0px; color: #333;"
+										value="(días)" />
+									
+								</p:panelGrid>
+	
+								
+								
+							</div>
+						</div>
+					</div>
+
+					<div class="div-3"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-3-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Condición de Edad</h6>
+						</div>
+						<div class="div-3-form" style="padding: 0px 0px">
+							<div class="div-3-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<p:panelGrid columns="2">
+
+									<div class="div-1-input"
+										style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+										<label for="fname"
+											style="width: 20%; margin: 0px; padding: 0px; padding-left: 0px; padding-right: 80px">Rango</label>
+
+
+										<p:selectOneMenu style="text-align:left;"
+											id="pgComboRangoDupli"
+											value="#{invitacionesController.invitacionesModel.busqSeleccionadaRangoEdadInvitacionDupli}">
+
+											<p:ajax event="change"
+												listener="#{invitacionesController.obtenerOpcionRangoEdadDupli}"
+												update="formDuplicarInvitacion:pgPanelDuplicaEdad formDuplicarInvitacion:rAnoIniDupli formDuplicarInvitacion:pgLabelEdadDesdeDupli formDuplicarInvitacion:pgLabelAnosDesdeDupli formDuplicarInvitacion:pgLabelEdadHastaDupli formDuplicarInvitacion:rAnoFinDupli formDuplicarInvitacion:pgLabelAnosHastaDupli" />
+
+											<f:selectItems
+												value="#{invitacionesController.invitacionesModel.listaBusqRangoEdadInvitacionDupli}"
+												var="busqRangoEdadInvitacionDupli"
+												itemValue="#{busqRangoEdadInvitacionDupli.id}"
+												itemLabel="#{busqRangoEdadInvitacionDupli.descripcion}" />
+										</p:selectOneMenu>
+
+
+									</div>
+								</p:panelGrid>
+
+								<p:panelGrid id="pgPanelDuplicaEdad" columns="6"
+									style="width:100%;  padding: 0px 0px; padding-left: 0px;">
+
+									<h:outputLabel id="pgLabelEdadDesdeDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoDupli}"
+										style="width: 100%; margin: 0px; padding: 0px; padding-left: 0px; padding-right: 70px"
+										value="Desde " />
+
+									<p:spinner id="rAnoIniDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoDupli}"
+										style="width: 90; 
+												    padding-right: 0px;
+												    padding-left: 0px;"
+										value="#{invitacionesController.invitacionesModel.anoInicialDupli}"
+										min="18" max="99" rotate="true">
+										<p:ajax
+											listener="#{invitacionesController.validaNumeroDuplicar()}"
+											update="formDuplicarInvitacion:rAnoIniDupli formDuplicarInvitacion:rAnoFinDupli" />
+									</p:spinner>
+
+									<h:outputLabel id="pgLabelAnosDesdeDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoDupli}"
+										style="width: 10%; padding: 0px 0px; padding-right: 0px; padding-left: 0px; margin: 0px; color: #333;"
+										value="Años" />
+
+
+									<h:outputLabel id="pgLabelEdadHastaDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoDupli}"
+										style="width: 20%; margin: 0px; padding-left: 0px; padding-right: 70px"
+										value="Hasta " />
+
+									<p:spinner id="rAnoFinDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoDupli}"
+										style="width: 90;"
+										value="#{invitacionesController.invitacionesModel.anoFinalDupli}"
+										min="18" max="99" rotate="true">
+
+										<p:ajax
+											listener="#{invitacionesController.validaNumeroDuplicar()}"
+											update="formDuplicarInvitacion:rAnoIniDupli formDuplicarInvitacion:rAnoFinDupli" />
+									</p:spinner>
+
+
+									<h:outputLabel id="pgLabelAnosHastaDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionAnoDupli}"
+										style="width: 10%; padding: 0px 3px; margin: 0px; color: #333;"
+										value="Años" />
+
+
+								</p:panelGrid>
+
+
+							</div>
+						</div>
+					</div>
+
+
+					<div class="div-4"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-4-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Entidades</h6>
+						</div>
+						<div class="div-4-form" style="padding: 0px 10px">
+							<div class="div-4-form-row "
+								style="display: flex; flex-wrap: wrap;">
+
+								<p:panelGrid id="pgDupliEntidad" columns="2"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<label for="fname"
+										style="width: 100%; margin: 0px; padding-left: 0px; padding-right: 50px">Por
+										Entidad</label>
+
+									<p:selectOneMenu style="padding-left: 0px; padding-right: 0px"
+										id="pgComboEntidadDupli"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaRangoEntidadInvitacionDupli}">
+
+										<p:ajax event="change"
+											listener="#{invitacionesController.obtenerOpcionEntidadDupli}"
+											update="formDuplicarInvitacion:pgDupliEntidadAccion formDuplicarInvitacion:pgDupliEntidadbusquedaLabel formDuplicarInvitacion:pgDupliEntidadbusquedaTexto formDuplicarInvitacion:pgDupliEntidadbusquedaBoton formDuplicarInvitacion:pgDupliEntidadbusquedaAdvertencia formDuplicarInvitacion:pgDupliEntidadbusquedaResultado" />
+
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqRangoEntidadInvitacionDupli}"
+											var="busqRangoEntidadInvitacionDupli"
+											itemValue="#{busqRangoEntidadInvitacionDupli.id}"
+											itemLabel="#{busqRangoEntidadInvitacionDupli.descripcion}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid id="pgDupliEntidadAccion" columns="2"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+
+									<h:outputLabel id="pgLabelTipoAccionDupli"
+										rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+										style="width: 20%; 
+			                                		margin: 0px; 
+			                                		padding-left: 0px; 
+			                                		padding-right: 45px"
+										value="Tipo Acción" />
+
+									<p:selectOneMenu id="pgComboAccionDupli"
+										style="
+			                            		 		padding-left: 0px; 
+			                            				padding-right: 18px"
+										rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaInclusivoEntidadInvitacionDupli}">
+
+
+										<f:selectItems style="	width: 100%; "
+											value="#{invitacionesController.invitacionesModel.listaBusqInclusivoEntidadInvitacionDupli}"
+											var="busqInclusivoEntidadInvitacionDupli"
+											itemValue="#{busqInclusivoEntidadInvitacionDupli.id}"
+											itemLabel="#{busqInclusivoEntidadInvitacionDupli.descripcion}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+
+
+
+								<div class="div-4-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px 5px;">
+
+									<p:panelGrid id="pgDupliEntidadbusquedaLabel" columns="1"
+										style="width: 20%; padding-left: 0px; padding-right: 0px">
+
+										<h:outputLabel id="pgLabelEntidadDupli"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+											style="width: 20%; margin: 0px;" value="Entidad" />
+									</p:panelGrid>
+
+									<p:panelGrid id="pgDupliEntidadbusquedaTexto" columns="1"
+										style="width: 60%; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+										<p:selectOneMenu id="advanced"
+											style="padding-left: 0px; padding-right: 0px"
+											panelStyle="width:380px" effect="fade" var="t" filter="true"
+											filterMatchMode="contains"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+											value="#{invitacionesController.invitacionesModel.codigoEntidad}">
+
+											<f:selectItem itemLabel="Seleccione" itemValue="" />
+											<f:selectItems
+												value="#{invitacionesController.invitacionesModel.listaEntidadVista}"
+												var="entidadVista" itemValue="#{entidadVista.code}"
+												itemLabel="#{entidadVista.description}" />
+										</p:selectOneMenu>
+
+
+									</p:panelGrid>
+
+									<p:panelGrid id="pgDupliEntidadbusquedaBoton" columns="1"
+										style="width: 10%; padding-left: 0px; padding-right: 0px">
+										<p:commandButton id="btnAgregarEntidadMod"
+											style="padding-left: 0px; padding-right: 0px"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+											value="Agregar"
+											action="#{invitacionesController.agregarEntidad}"
+											update=":formDuplicarInvitacion:tablaConsultaEntidadDuplicar" />
+									</p:panelGrid>
+
+								</div>
+
+
+								<div class="div-4-input"
+									style="width: 100%; display: flex; flex-wrap: wrap; align-items: center; margin: 5px 0px;">
+
+									<p:panelGrid id="pgDupliEntidadbusquedaAdvertencia" columns="1">
+										<h:outputLabel id="pgLabelAdvertenciaDupli"
+											rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+											style="width: 100%; margin: 0px; color:#98002e; padding: 5px 0px;"
+											value="*Máximo 10 entidades" />
+											
+										<h:outputLabel id="msjInfoEntidadesExcluidas"											
+											style="width: 100%; margin: 0px; color:#98002e; padding: 5px 0px;"
+											value="#{invitacionesController.invitacionesModel.msjInfoEntidadesExcluidas}" />	
+									</p:panelGrid>
+
+									<p:panelGrid id="pgDupliEntidadbusquedaResultado" columns="1">
+
+										<div style="width: 100%;">
+
+											<p:dataTable id="tablaConsultaEntidadDuplicar"
+												rendered="#{invitacionesController.invitacionesModel.opcionEntidadDupli}"
+												value="#{invitacionesController.invitacionesModel.listaAgregado}"
+												var="consultaEntidadDupli" rows="10"
+												style="table-layout: fixed;"
+												paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+										 	{NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+												currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+												rowsPerPageTemplate="10,20,50" rowIndexVar="index"
+												selection="#{invitacionesController.invitacionesModel.objetoSeleccionado}"
+												scrollable="true" scrollHeight="150">
+
+												<p:columnGroup type="header">
+													<p:row>
+														<p:column rowspan="2" headerText="Entidad"
+															style="text-align:center;vertical-align: middle;width: 80px;" />
+
+														<p:column rowspan="2" headerText="Descripción Entidad"
+															style="text-align:center;vertical-align: middle;width: 250px;" />
+
+														<p:column rowspan="2" headerText="Acción"
+															style="text-align:center;vertical-align: middle;width: 80px;" />
+													</p:row>
+												</p:columnGroup>
+												<p:column rowspan="2" headerText="Entidad"
+													style="text-align:center;vertical-align: middle">
+													<h:outputText value="#{consultaEntidadDupli.code}" />
+												</p:column>
+												<p:column rowspan="2" headerText="Descripción Entidad"
+													style="text-align:center;vertical-align: middle">
+													<h:outputText value="#{consultaEntidadDupli.name}" />
+												</p:column>
+												<p:column rowspan="2" headerText="Acción"
+													style="text-align:center;vertical-align: middle">
+													<p:commandButton icon="#{cad['icono.cancelar']}"
+														action="#{invitacionesController.eliminarEntidad(consultaEntidadDupli.code)}"
+														update=":formDuplicarInvitacion:tablaConsultaEntidadDuplicar" />
+
+												</p:column>
+											</p:dataTable>
+
+
+										</div>
+									</p:panelGrid>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+
+					<div class="div-5"
+						style="margin: 10px 0px; padding: 0px; border: 1px solid #333;">
+						<div class="div-5-titulo"
+							style="padding: 5px 10px; background: #C11518; color: white; width: 35%; display: flex; justify-content: center;">
+							<h6 style="margin: 0px;">Condiciones Adicionales</h6>
+						</div>
+						<div class="div-3-form" style="padding: 0px 10px 8px;">
+							<div class="div-3-form-row "
+								style="display: flex; flex-wrap: wrap;">
+								<div class="div-1-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 40%; margin: 0px;">Clave
+										Internet</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgComboClaveIntDupli"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaClaveInternetInvitacionDupli}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqClaveInternetInvitacionDupli}"
+											var="busqClaveInternetInvitacionDupli"
+											itemValue="#{busqClaveInternetInvitacionDupli.id}"
+											itemLabel="#{busqClaveInternetInvitacionDupli.descripcion}" />
+									</p:selectOneMenu>
+
+
+								</div>
+								<div class="div-1-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; margin: 10px 0px;">
+									<label for="fname" style="width: 40%; margin: 0px;">Banca
+										Celular</label>
+
+									<p:selectOneMenu style="text-align:left; width: 50%;"
+										id="pgComboBancaCelDupli"
+										value="#{invitacionesController.invitacionesModel.busqSeleccionadaBancaCelularInvitacionDupli}">
+
+										<f:selectItems
+											value="#{invitacionesController.invitacionesModel.listaBusqBancaCelularInvitacionDupli}"
+											var="busqBancaCelularInvitacionDupli"
+											itemValue="#{busqBancaCelularInvitacionDupli.id}"
+											itemLabel="#{busqBancaCelularInvitacionDupli.descripcion}" />
+
+									</p:selectOneMenu>
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+					<div class="div-activo" style="margin: 5px 0px;">
+
+						<div class="div-activo-form">
+							<div class="div-activo-form-row "
+								style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+								<div class="div-activo-input"
+									style="width: 50%; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+
+									<label for="Activo" style="margin: 0px; padding: 0px 5px;">
+										Activo</label>
+									<p:selectBooleanCheckbox
+										value="#{invitacionesController.invitacionesModel.activoDupli}" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="div-btn" style="margin: 0px 0px; padding: 0px;">
+
+						<div class="div-btn-form">
+							<div class="div-btn-form-row "
+								style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+								<div class="div-btn-input"
+									style="width: 20%; padding: 5px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+
+									<p:commandButton value="Duplicar" style="width:100%;"
+										id="dupInvitacion"
+										actionListener="#{invitacionesController.duplicaInvitacion}"
+										icon="#{cad['icono.guardar']}" styleClass="boton-operaciones"
+										update=":formInvitacionesbandeja" />
+
+								</div>
+
+								<div class="div-btn-input"
+									style="width: 20%; padding: 5px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center;">
+									<p:commandButton value="Salir"
+										style="width:100%; background: #CDCDCD!important;"
+										onclick="duplicarInvitacion.hide();" />
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>
+
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

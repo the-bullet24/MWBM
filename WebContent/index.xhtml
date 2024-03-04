@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Banco de la Naci&oacute;n - Modulo Web Banca Movil</title>
+	<!-- <link type="text/css" rel="stylesheet" href="resources/css/style.css" /> -->
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Language" content="es" />
+	<meta name="robots" content="index,follow" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta http-equiv="expires" content="0" />
+
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/resetearcss.css" />
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/login-principal.css" />
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/login.css" />
+	<link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/tipografias.css" />
+
+
+<!-- 	<h:outputStylesheet name="css/resetearcss.css"/> -->
+<!-- 	<h:outputStylesheet name="css/login-principal.css"/> -->
+<!-- 	<h:outputStylesheet name="css/login.css"/> -->
+<!-- 	<h:outputStylesheet name="css/tipografias.css"/> -->
+
+</h:head>
+<h:body>
+	<div id="bn-contenidos">
+		<div id="cabecera">
+			<a href="" accesskey="l" title="Logo Banco Nacion"> <img
+				src="#{request.contextPath}/resources/img/plantillaBN/logo-bn.png" alt="Logo Banco Nacion" ></img>
+			</a>
+		</div>
+		<div id="border-superior">
+			<img src="#{request.contextPath}/resources/img/plantillaBN/border-superior.jpg" />
+		</div>
+		<div id="cuerpo">
+			<div id="logo">
+				<img src="#{request.contextPath}/resources/img/plantillaBN/logo-mwbm.jpg" />
+			</div>
+			<div class="visa">
+				<div class="contenedor-slide">
+					<p:graphicImage name="img/imagen-login.jpg" width="320px"	height="275px" />
+				</div>
+			</div>
+			<div id="limp" class="limpiar" style="font-size:10px !important">
+				<h:form id="form" prependId="false">
+<!-- 					<p:messages id="mensajes" showDetail="false" closable="true" showSummary="true" /> -->
+					<h2>Acceso al Sistema</h2>
+					<br />
+					<center>
+						<p:outputLabel value="${param['exception_message']}" rendered="${!empty param['error']}" style="width:60%;color: red;word-wrap: break-word;margin:1% 0 2% 20%;text-align: center;"/>
+					</center>
+					<br></br>
+					<div class="etiquetas-form">
+						<div class="limpiar">
+							<h:outputLabel for="j_username" value="Usuario:"
+								styleClass="grande" />
+							<p:inputText id="j_username"
+								required="true"
+								label="username" styleClass="grande" maxlength="4"
+								requiredMessage="Ingrese un usuario">
+<!-- 								validatorMessage="El dato ingresado para 'N° de CDC' no es correcto, ingrese solo números"> -->
+								<f:validateRegex
+									pattern="(([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|ñ|Ñ|Á|É|Í|Ó|Ú)*)" />
+							</p:inputText>
+						</div>
+
+						<div class="limpiar">
+							<h:outputLabel for="j_password" value="Contraseña:" />
+							<p:password id="j_password" maxlength="8"
+								requiredMessage="Ingrese una contraseña" required="true"
+								label="password" styleClass="grande" />
+						</div>
+						<p:commandButton id="btnLogin" value="Ingresar" action="#{loginController.iniciarSesion()}"
+							update=":form:mensajes" styleClass="commandButton" ajax="false"/>
+					</div>
+					<div id="contacto" class="generar-clave-chica">
+						<img src="#{request.contextPath}/resources/img/plantillaBN/chica.png" />
+						<div class="generar-clave-contenido">
+							<p>
+								Si no recuerda su contraseña, comuniquese al anexo: <span>11111</span>
+							</p>
+							<p>
+								o env&iacute;e un correo a <span>soportetecnico@bn.com.pe</span>
+							</p>
+						</div>
+					</div>
+				</h:form>
+			</div>
+
+			<div id="border-inferior">
+				<img src="#{request.contextPath}/resources/img/border-inferior.jpg" />
+			</div>
+
+<!-- 			<div id="pie-pagina">Banco de la Naci&oacute;n - UNMSM, Lima - -->
+<!-- 				Per&uacute;. &copy; 2015 Todos los derechos reservados -->
+<!-- 				</div> -->
+		</div>
+	</div>
+	<script>
+		jQuery(document).ready(function($) {
+			$('#form\\:username').focus(); 
+		});
+	</script>
+</h:body>
+
+</html>

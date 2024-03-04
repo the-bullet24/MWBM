@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formOperaciones">
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Validación IP"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:75%">
+					<p:fieldset>
+						<p:panelGrid columns="3" style="width:120%">
+							<p:panelGrid columns="4" style="width:25%">
+								
+								<p:panelGrid columns="1">
+									<p:outputLabel value="IP: " style="font-weight:bold" />
+								</p:panelGrid>
+							
+								<p:panelGrid columns="5">
+
+									<script type="text/javascript">
+										function validar(e) {
+											var tecla = e.keyCode;
+
+											if (tecla == 8 || tecla == 9
+													|| tecla == 13) {
+												return true;
+											}
+											var patron = ^\d+(\.\d+)*$;
+											
+											var tecla_final = String
+													.fromCharCode(tecla);
+											return patron.test(tecla_final);
+										}
+									</script>
+
+									<p:inputText id="itNumDocumento"
+										value="#{operacionesMVController.operacionesMVModel.numDocumento}"
+										maxlength="15"
+										onkeypress="return validar(event)"></p:inputText>
+
+									<script type="text/javascript">
+										$(document).ready(function() {
+											$('#limpiar').click(function() {
+												$('p:inputText').val('');
+											});
+										});
+									</script>
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<center>
+
+								<p:commandButton value="Buscar" id="guardarDeposito"
+									update="formOperaciones:pgOperacionesRealizadas formOperaciones:tablaOperaciones formOperaciones:mensaje"
+									onclick="statusDialog.show();"
+									oncomplete="statusDialog.hide();"
+									actionListener="#{operacionesMVController.consultaIP}"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+
+							</center>
+						</p:panelGrid>
+					</p:fieldset>
+				</p:panelGrid>
+				
+				<p:panelGrid id="pgOperacionesRealizadas" columns="1"
+					style="width:75%">
+					
+					<p:fieldset id="fieldSetOperaciones">
+					
+								<p:commandButton style="margin: 0 1% 1% 0; float: right"
+									value="Agregar Nuevo Rango IP" id="btnAgregarIP"
+									actionListener="#{operacionesMVController.iniciarAgregarRangoIP()}"
+									update="">
+									<p:resetInput
+										target=":formAgregarParametro" />
+								</p:commandButton>
+					
+						
+						<p:dataTable id="tablaOperaciones"
+							value="#{operacionesMVController.operacionesMVModel.listValidacionRangoIP}"
+							var="operacion" paginator="true" paginatorPosition="bottom"
+							rows="10" style="table-layout: fixed;"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{currentPage} de {totalPages}"
+							rowsPerPageTemplate="10,15,20"
+							editable="true"
+							emptyMessage="No hay operaciones realizadas" rowIndexVar="index">
+
+							<p:ajax event="rowEdit" listener="#{operacionesMVController.onRowEdit}" update=":formOperaciones:tablaOperaciones"/>
+            			
+
+							<p:columnGroup type="header">
+							<p:row>
+									<p:column rowspan="2" headerText="Rango Inicial"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Rango Final"
+										style="text-align:center;vertical-align: middle" />
+									
+									<p:column rowspan="2" headerText="Estado"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Usuario Crador"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Fecha Creación"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Usuario Modificador"
+										style="text-align:center;vertical-align: middle" />
+									
+									<p:column rowspan="2" headerText="Fecha Modificación"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Edición"
+										style="text-align:center;vertical-align: middle" />					
+
+								</p:row>
+							</p:columnGroup>
+
+							<p:column rowspan="2" headerText="Rango Inicial"
+								style="text-align:center;vertical-align: middle">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{operacion.ipRangoIni}"/>		
+										</f:facet>
+										<f:facet name="input">
+											<h:inputText id="modelInput" value="#{operacion.ipRangoIni}" style="width:100%"
+											required="true" requiredMessage="Debe ingresar una IP"/>
+										</f:facet>
+									</p:cellEditor>
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Rango Final"
+								style="text-align:center;vertical-align: middle">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{operacion.ipRangoFin}"/>
+										</f:facet>
+										<f:facet name="input">
+											<h:inputText value="#{operacion.ipRangoFin}" style="width:100%" 
+											required="true" requiredMessage="Deve ingresar una IP"/>
+										</f:facet>
+									</p:cellEditor>
+							</p:column>
+
+							<p:column rowspan="2" headerText="Estado"
+								style="text-align:left;vertical-align: middle">
+								<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{operacion.estadoIP}"/>
+										</f:facet>
+										<f:facet name="input">
+											<h:selectOneMenu value="#{operacionesMVController.operacionesMVModel.tipobusquedaIP}" style="width:100%">
+                            					<f:selectItems value="#{operacionesMVController.operacionesMVModel.listTipoBusquedaEstadoIP}" var="status"
+                                           							itemLabel="#{status.descripcion}" itemValue="#{status.id}"/>
+                        					</h:selectOneMenu>
+										</f:facet>
+									</p:cellEditor>
+								
+							</p:column>
+
+							<p:column rowspan="2" headerText="Usuario Crador"
+								style="text-align:left;vertical-align: middle">
+								<h:outputText value="#{operacion.usuarioCrea}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Fecha Creación"
+								style="text-align:left;vertical-align: middle">
+								<h:outputText value="#{operacion.fechaCrea}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy hh:mm:ss a" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Usuario Modificador"
+								style="text-align:left;vertical-align: middle">
+									<h:outputText value="#{operacion.usuarioMOD}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Fecha Modificación"
+								style="text-align:left;vertical-align: middle">
+								<h:outputText value="#{operacion.fechaMOD}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy hh:mm:ss a" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column style="width:3rem">
+                				<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+            				</p:column>
+
+						</p:dataTable>
+					</p:fieldset>
+				</p:panelGrid>
+			</center>
+		</h:form>
+		
+		
+		<p:dialog header="Agregar Parametro" modal="true" appendTo="@(body)"
+			width="30%" resizable="false" widgetVar="dlgWvAgregarRangoIP"
+			dragable="false" closeOnEscape="true" position="center"
+			showEffect="clip" hideEffect="clip" id="dialogAgregarParametro">
+			<h:form id="formAgregarParametro">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					
+					<h:outputText value="Rango Inicial: *"></h:outputText>
+					<p:inputText style="width:95%" id="rangoInicial"
+						required="true"
+						value="#{operacionesMVController.operacionesMVModel.iniRangoIP}"
+						requiredMessage="Debe ingresar una IP">
+					</p:inputText>
+					<h:outputText></h:outputText>
+					<p:message for="rangoInicial" display="text" />
+					
+					<h:outputText value="Rango Final: *"></h:outputText>
+					<p:inputText id="rangoFinal" required="true"
+						style="width:95%"
+						value="#{operacionesMVController.operacionesMVModel.finRangoIP}"
+						requiredMessage="Debe ingresar una IP">
+					</p:inputText>
+					<h:outputText></h:outputText>
+					<p:message for="rangoFinal" display="text" />
+					
+					<h:outputText value="Estado: *"></h:outputText>
+					<p:selectOneMenu style="margin:-7px 0 7px 0"
+						value="#{operacionesMVController.operacionesMVModel.tipobusquedaIP}"
+						id="estadoRangoIP" required="true"
+						requiredMessage="Debe seleccionar un Estado">
+						<f:selectItem itemValue="#{null}" itemLabel="SELECCIONE UN ESTADO"></f:selectItem>
+						<f:selectItems
+							value="#{operacionesMVController.operacionesMVModel.listTipoBusquedaEstadoIP}"
+							var="estado" itemValue="#{estado.id}" itemLabel="#{estado.descripcion}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText></h:outputText>
+					<p:message for="estadoRangoIP" closable="true" display="text" />					
+
+					<br></br>
+				</p:panelGrid>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="dlgWvAgregarRangoIP.clearFilters();"
+						actionListener="#{operacionesMVController.agregarIP()}"
+						update=":formAgregarParametro" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvAgregarRangoIP.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+		
+
+	</ui:define>
+</ui:composition>

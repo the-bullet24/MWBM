@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:pe="http://primefaces.org/ui/extensions" template="../plantilla/plantilla.xhtml">
+
+    <ui:define name="metadata">
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formReporteConsulta">
+            <p:growl id="mensaje" showDetail="true" />
+            <center>
+                <br /> <br />
+                <p:outputLabel value="Consolidado de Clientes con Transacciones Realizadas"
+                    style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+                <br /> <br />
+                <p:panelGrid columns="1" style="width:100%">
+                    <p:fieldset>
+                        <p:panelGrid columns="3" style="width:100%">
+                            <p:panelGrid columns="8" id="pgConsTran">
+                                <p:panelGrid columns="1">
+                                    <p:outputLabel value="Periodo a consultar: " style="font-weight:bold" />
+                                </p:panelGrid>
+							<p:panelGrid columns="1">
+                                    <p:outputLabel value="Fecha Inicial: " style="font-weight:bold"
+                                        rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.opcionOcultarFiltros}" />
+                                </p:panelGrid>
+                                <p:panelGrid columns="1" id="pgFechasBusquedaInicial">
+                                    <p:calendar locale="es" id="maskFI"
+                                    	navigator="true"
+										rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.opcionOcultarFiltros}"                                              			
+                                        value="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.fechaInicioBusqueda}"
+                                        pattern="dd/MM/yyyy" mask="true">
+                                    </p:calendar>
+								</p:panelGrid>
+                         
+                         		<p:panelGrid columns="1">
+                                    <p:outputLabel value="Fecha Final: " style="font-weight:bold"
+                                        rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.opcionOcultarFiltros}" />
+                                </p:panelGrid>
+                                    
+                                <p:panelGrid columns="1" id="pgFechasBusquedaFinal">
+                                    <p:calendar locale="es" id="maskFF" readonlyInput="true"
+                                        rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.opcionOcultarFiltros}"
+                                        maxdate="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.maxFechaFinBusqueda}"
+                                        value="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.fechaFinBusqueda}"
+                                        navigator="true" pattern="dd/MM/yyyy" mask="true">
+                                    </p:calendar>
+								</p:panelGrid>                    						
+						</p:panelGrid>
+                            
+                            <center>
+
+                                <p:commandButton value="Buscar" id="consultarClave"
+                                 	update="formReporteConsulta:pgConsulta formReporteConsulta:tablaConsulta formReporteConsulta:mensaje"
+                                    onclick="statusDialog.show();" oncomplete="statusDialog.hide();"
+                                    actionListener="#{consolidadoClientesTransaccionController.obtenerConsultaTransaccion}"
+                                    icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+                            </center>
+
+                        </p:panelGrid>
+                    </p:fieldset>
+                </p:panelGrid>
+	<p:panelGrid id="pgConsulta" columns="1" style="width:100%">
+	<p:fieldset id="fieldSetConsulta"
+					rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.busquedaNoRealizada()}">
+
+							<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.existeConsultasNoEncontradas()}" />
+	
+							<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.existeConsultasEncontradas()}"
+								actionListener="#{consolidadoClientesTransaccionController.generarReporte(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.existeConsultasEncontradas()}"
+								actionListener="#{consolidadoClientesTransaccionController.generarReporte(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+
+						
+						<p:dataTable id="tablaConsulta"
+								value="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.listaConsolidadoClientesTransaccion}"
+								rendered="#{consolidadoClientesTransaccionController.consolidadoClientesTransaccionModel.existeConsultasEncontradas()}"
+								var="consulta" paginator="true" paginatorPosition="bottom"
+								rows="10" style="table-layout: fixed;"
+								paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+								currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+								rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+								
+						<p:columnGroup type="header">
+									<p:row>
+										<p:column rowspan="2" headerText="Cantidad Clientes"
+											style="text-align:center;vertical-align: middle" />
+
+										<p:column rowspan="2" headerText="Tipo Transacción"
+											style="text-align:center;vertical-align: middle" />	
+											
+										<p:column rowspan="2" headerText="Transacción"
+											style="text-align:center;vertical-align: middle" />	
+											
+									</p:row>
+
+						</p:columnGroup>
+			
+								<p:column rowspan="2" headerText="Cantidad Clientes"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.cantidadCliente}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Tipo Transacción"
+									style="text-align:center;vertical-align: middle">
+									<h:outputText value="#{consulta.codigoTransaccion}" />
+								</p:column>
+								<p:column rowspan="2" headerText="Transacción"
+									style="text-align:left;vertical-align: middle">
+									<h:outputText value="#{consulta.nombreTransaccion}" />
+								</p:column>
+								
+					
+				</p:dataTable>
+			</p:fieldset>
+	</p:panelGrid>
+            </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,800 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formAfiliaciones">
+			<p:growl id="mensaje" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Consulta de afiliaciones"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<br />
+						<center>
+							<p:panelGrid columns="2" style="width:40%; padding-right: 0px;"
+								id="pgAfiSMS">
+								<p:panelGrid columns="2"
+									style="padding-right: 0px; width: 90px; margin-right: 20px;">
+									<p:outputLabel value="Buscar por: *"
+										style="font-weight:bold; padding-right: 0px; width: 75px" />
+								</p:panelGrid>
+
+
+								<p:panelGrid columns="7">
+
+
+									<p:selectOneMenu style="text-align:left;" id="pgCombo1"
+										value="#{afiliacionesController.afiliacionesModel.tipoBusquedaSeleccionada}">
+
+										<p:ajax event="change"
+											listener="#{afiliacionesController.obtenerFiltroBusqueda}"
+											update="formAfiliaciones:pgCombo2 formAfiliaciones:itNumDocumento formAfiliaciones:pgTotal formAfiliaciones:pgAfiCantidad formAfiliaciones:pgConsultaAfiliacion formAfiliaciones:tablaConsultaAfiliacion formAfiliaciones:panelGridResultado formAfiliaciones:panGridAfiliacion formAfiliaciones:panGridDatosToken formAfiliaciones:mensaje formAfiliaciones:panelGridCantidad" />
+
+										<f:selectItems
+											value="#{afiliacionesController.afiliacionesModel.listaTipoBusqueda}"
+											var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+											itemLabel="#{tipoBusqueda.descripcion}"
+											onChange="jsFunction()" id="limpiar" />
+									</p:selectOneMenu>
+
+									<p:selectOneMenu style="text-align:left;" id="pgCombo2"
+										rendered="#{afiliacionesController.afiliacionesModel.opcionConsulta}"
+										value="#{afiliacionesController.afiliacionesModel.subTipoBusquedaSeleccionada}"
+										valueChangeListener="#{afiliacionesController.afiliacionesModel.inicializarTipoDocumento}">
+
+										<p:ajax event="change" process="@this"
+											listener="#{afiliacionesController.obtenerSubFiltroBusqueda}"
+											update="formAfiliaciones:itNumDocumento formAfiliaciones:pgCombo2" />
+
+										<f:selectItems
+											value="#{afiliacionesController.afiliacionesModel.subListaTipoBusqueda}"
+											var="tipoDocumento" itemValue="#{tipoDocumento.code}"
+											itemLabel="#{tipoDocumento.name}" />
+
+									</p:selectOneMenu>
+
+									<script type="text/javascript">
+										function validar(e) {
+											var tipoBusqueda = "#{afiliacionesController.afiliacionesModel.tipoBusquedaSeleccionada}";
+											var tipoDocumento = "#{afiliacionesController.afiliacionesModel.subTipoDocumento}";
+											var tecla = e.keyCode;
+											if (tecla == 8 || tecla == 9
+													|| tecla == 13) {
+												return true;
+											}
+											if (tipoBusqueda == 2) {
+												var patron = /[0-9]/;
+												var tecla_final = String
+														.fromCharCode(tecla);
+												return patron.test(tecla_final);
+											} else if (tipoBusqueda == 1) {
+												if (tipoDocumento == 1) {
+													var patron = /[0-9]/;
+													var tecla_final = String
+															.fromCharCode(tecla);
+													return patron
+															.test(tecla_final);
+												} else {
+													var patron = /[a-zA-Z0-9]/i;
+													var tecla_final = String
+															.fromCharCode(tecla);
+													return patron
+															.test(tecla_final);
+												}
+											}
+										}
+									</script>
+									<p:inputText id="itNumDocumento"
+										value="#{afiliacionesController.afiliacionesModel.numDocumento}"
+										maxlength="#{afiliacionesController.afiliacionesModel.maxLength}"
+										update="formAfiliaciones:pgCombo2"
+										onkeypress="return validar(event)">
+									</p:inputText>
+
+									<script type="text/javascript">
+										$(document).ready(function() {
+											$('#limpiar').click(function() {
+												$('p:inputText').val('');
+											});
+										});
+									</script>
+
+									<br></br>
+
+									<p:commandButton value="Buscar" id="guardarDeposito"
+										onclick="statusDialog.show();"
+										oncomplete="statusDialog.hide();"
+										actionListener="#{afiliacionesController.buscarAfiliacion}"
+										update="formAfiliaciones:pgTotal formAfiliaciones:pgAfiCantidad formAfiliaciones:pgConsultaAfiliacion formAfiliaciones:tablaConsultaAfiliacion formAfiliaciones:panelGridResultado formAfiliaciones:panGridAfiliacion formAfiliaciones:panGridDatosToken formAfiliaciones:mensaje formAfiliaciones:panelGridCantidad"
+										icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+								</p:panelGrid>
+
+
+
+							</p:panelGrid>
+							<br />
+						</center>
+					</p:fieldset>
+				</p:panelGrid>
+
+
+
+
+				<p:panelGrid id="pgTotal" columns="1" style="width:100%">
+					<p:fieldset id="fieldSetTotal"
+						rendered="#{afiliacionesController.afiliacionesModel.busquedaNoRealizada()}">
+
+						<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{afiliacionesController.afiliacionesModel.existeConsultasNoEncontradas()}" />
+
+
+						<p:panelGrid id="panelGridResultado" columns="2">
+
+							<p:fieldset legend="Cliente" style="width:450px;height:180px;"
+								rendered="#{afiliacionesController.afiliacionesModel.existeConsultasEncontradas()}">
+								<br />
+
+								<p:panelGrid columns="2" id="panGridAfiliacion"
+									style="width:100%;margin-left:10%;">
+
+
+									<h:outputText style="font-weight: bold;" value="CIC" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.nroCic}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;" value="Nombre" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.nombre}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;" value="Documento" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.documentoFormato}  "></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;"
+										value="Correo electronico" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.correoElectronico}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;" value="Celular" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.celularFormato}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+
+								</p:panelGrid>
+
+							</p:fieldset>
+							<p:fieldset legend="Dispositivo Seguridad"
+								style="width:450px;height:180px;"
+								rendered="#{afiliacionesController.afiliacionesModel.existeConsultasEncontradas()}">
+								<br />
+
+								<p:panelGrid columns="2" id="panGridDatosToken"
+									style=" text-align: left;width:75%;margin-left: 10%;">
+
+									<h:outputText style="font-weight: bold;" value="Tipo:" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.desTipoToken}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;"
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.etiqueta01}" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.resultado01}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;"
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.etiqueta02}" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.resultado02}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+									<h:outputText style="font-weight: bold;"
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.etiqueta03}" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacion.datoToken.resultado03}"></h:outputText>
+									<h:outputText />
+									<h:outputText />
+
+
+
+								</p:panelGrid>
+
+							</p:fieldset>
+						</p:panelGrid>
+
+						<p:panelGrid id="panelGridCantidad" columns="1" style="width:100%">
+
+							<p:fieldset
+								rendered="#{afiliacionesController.afiliacionesModel.existeConsultasEncontradas()}">
+
+								<p:panelGrid columns="9" id="pgAfiCantidad" style="float:right">
+
+
+									<h:outputText style="font-weight: bold;"
+										value="Cantidad a la Fecha de:" />
+
+									<h:outputText style="font-weight: bold;" value="Afiliación:" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.cantAfi}"></h:outputText>
+
+									<h:outputText style="font-weight: bold;" value="Activación:" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.cantAct}"></h:outputText>
+
+									<h:outputText style="font-weight: bold;" value="Vinculación:" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.cantVinc}"></h:outputText>
+										
+									<h:outputText style="font-weight: bold;" value="Desafiliación:" />
+									<h:outputText
+										value="#{afiliacionesController.afiliacionesModel.cantDis}"></h:outputText>
+
+
+								</p:panelGrid>
+
+							</p:fieldset>
+
+						</p:panelGrid>
+
+
+
+
+
+
+						<p:panelGrid id="pgConsultaAfiliacion" columns="1"
+							style="width:100%">
+
+							<p:fieldset id="fieldSetConsulta"
+								rendered="#{afiliacionesController.afiliacionesModel.existeConsultasEncontradas()}">
+
+								<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+									<h:commandLink
+										actionListener="#{afiliacionesController.generarReporteAfiliaciones(1)}">
+										<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+									</h:commandLink>
+
+									<h:commandLink
+										actionListener="#{afiliacionesController.generarReporteAfiliaciones(2)}">
+										<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+									</h:commandLink>
+								</p:panelGrid>
+
+								<p:dataTable id="tablaConsultaAfiliacion"
+									value="#{afiliacionesController.afiliacionesModel.listaAfiliacionDetalle}"
+									var="consulta" paginator="true" paginatorPosition="bottom"
+									rows="10" style="table-layout: fixed;"
+									paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+									currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+									rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+
+									<p:columnGroup type="header">
+										<p:row>
+											<p:column colspan="4" headerText="Cliente" />
+											<p:column colspan="5" headerText="Afiliación" />
+											<p:column colspan="2" headerText="Activación" />
+											<p:column colspan="2" headerText="Vinculación" />
+											<p:column colspan="4" headerText="Desafiliación" />
+											<p:column rowspan="3" headerText="Cant. Bloqueos" style="height: 40px" />
+											<p:column rowspan="3" headerText="Acción" />
+										</p:row>
+
+										<p:row>
+
+											<p:column rendered="false" rowspan="2"
+												headerText="Identificador"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rendered="false" rowspan="2"
+												headerText="cod. Tip. Documento"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Tip. Documento"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Num. Documento"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="CIC"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Nombre Cliente"
+												style="text-align:center;vertical-align: middle" />
+
+
+
+
+
+											<p:column rendered="false" rowspan="2"
+												headerText="Cod. Operador"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Operador"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Celular"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Canal"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Fecha"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Tipo"
+												style="text-align:center;vertical-align: middle" />
+
+
+
+											<p:column rowspan="2" headerText="Canal"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Fecha"
+												style="text-align:center;vertical-align: middle" />
+												
+
+											<p:column rowspan="2" headerText="Modelo"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Fecha"
+												style="text-align:center;vertical-align: middle" />
+												
+
+											<p:column rowspan="2" headerText="Canal"
+												style="text-align:center;vertical-align: middle" />
+
+
+											<p:column rowspan="2" headerText="Fecha"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Motivo"
+												style="text-align:center;vertical-align: middle" />
+
+											<p:column rowspan="2" headerText="Ag./Caj."
+												style="text-align:center;vertical-align: middle" />
+
+
+										</p:row>
+
+									</p:columnGroup>
+
+									<p:column rendered="false" rowspan="2"
+										headerText="Identificador"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.identificador}" />
+									</p:column>
+
+									<p:column rendered="false" rowspan="2"
+										headerText="cod. Tip. Documento"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.typeDocument}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Tip. Documento"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.typeDocumentDesc}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Num. Documento"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.numberDocument}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="CIC"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.codeClient}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Nombre Cliente"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.nameClient}" />
+									</p:column>
+
+
+
+
+
+
+									<p:column rendered="false" rowspan="2"
+										headerText="Cod. Operador"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.operatorMobileAffil}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Operador"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.operatorMobileAffilDesc}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Celular"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.numberMobileAffil}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Canal"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.channelAfill}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.dateAffi}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Tipo"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.typeAffil}" />
+									</p:column>
+
+
+
+
+
+									<p:column rowspan="2" headerText="Canal"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.channelAct}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.dateAct}" />
+									</p:column>
+									
+
+									<p:column rowspan="2" headerText="Modelo"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.modelVinc}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.dateVinc}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Canal"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.channelDisaffil}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.dateDisaffil}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Motivo"
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.reasonDisaffil}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Ag./Caj."
+										style="text-align:center;vertical-align: middle">
+										<h:outputText value="#{consulta.agencyDisaffil}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Cant. Bloqueos"
+										style="text-align:center;vertical-align: middle; " >
+										<h:outputText value="#{consulta.blockCount}" />
+									</p:column>
+
+									<p:column rowspan="2" headerText="Acción"
+										style="text-align:center;vertical-align: middle">
+										<p:commandButton value="Detalle"
+											oncomplete="detalle.show();" update=":formDetalle"
+											actionListener="#{afiliacionesController.cargarDatosAfiliacionDetalle(consulta)}">
+										</p:commandButton>
+										<p:commandButton value="Bloqueos"
+											oncomplete="detalleBloqueo.show();"
+											update=":formDetalleBloqueo" style="margin-left: 10px"
+											actionListener="#{afiliacionesController.cargarDatosBloqueo(consulta)}">
+										</p:commandButton>
+									</p:column>
+								</p:dataTable>
+							</p:fieldset>
+						</p:panelGrid>
+
+					</p:fieldset>
+
+				</p:panelGrid>
+
+			</center>
+		</h:form>
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<img src="#{request.contextPath}/resources/img/ajaxloadingbar.gif" />
+			<!-- 			<p:graphicImage name="recursos/img/ajaxloadingbar.gif" /> -->
+		</p:dialog>
+
+
+		<p:dialog id="dialog" widgetVar="detalle" modal="true" closable="true"
+			appendTo="@(body)" resizable="false" closeOnEscape="false"
+			draggable="false" position="center" showEffect="clip"
+			hideEffect="clip" header="Detalle">
+			<h:form id="formDetalle">
+
+
+				<center>
+					<!-- 					<p:panel> -->
+					<br></br>
+					<p:fieldset legend="Detalle">
+
+						<p:dataTable id="tablaDetalleCliente"
+							value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle}"
+							var="consulta">
+
+							<p:columnGroup type="header">
+
+								<p:row>
+									<p:column rowspan="2" headerText="Tip. Documento"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Num. Documento"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="CIC"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Nombre Cliente"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Operador"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Celular"
+										style="text-align:center;vertical-align: middle" />
+
+								</p:row>
+
+							</p:columnGroup>
+
+							<p:column rowspan="2" headerText="Tip. Documento"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.typeDocumentDesc}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Num. Documento"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.numberDocument}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="CIC"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.codeClient}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Nombre Cliente"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.nameClient}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Operador"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.operatorMobileAffilDesc}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Celular"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.numberMobileAffil}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br></br>
+						<br></br>
+
+
+						<table width="100%" border="1">
+							<tr>
+								<td width="25%" bgcolor="#cdcdcd" align="center" colspan="2">Afiliación</td>
+								<td width="25%" bgcolor="#cdcdcd" align="center" colspan="2">Activación</td>
+								<td width="25%" bgcolor="#cdcdcd" align="center" colspan="2">Vinculación</td>
+								<td width="25%" bgcolor="#cdcdcd" align="center" colspan="2">Desafiliación</td>
+							</tr>
+
+							<tr>
+								<td>Fecha y Hora</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.dateAffi}" /></td>
+
+								<td>Fecha y Hora</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.dateAct}" /></td>
+
+								<td>Fecha y Hora</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.dateVinc}" /></td>
+
+								<td>Fecha y Hora</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.dateDisaffil}" /></td>
+
+							</tr>
+
+							<tr>
+								<td>Canal</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.channelAfill}" /></td>
+								<td>Canal</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.channelAct}" /></td>
+								<td>Modelo</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.modelVinc}" /></td>
+								<td>Canal</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.channelDisaffil}" /></td>
+
+							</tr>
+
+							<tr>
+								<td>Tipo</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.typeAffilDesc}" /></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>Descripción</td>
+								<td></td>
+							</tr>
+
+							<tr>
+								<td><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.afiCampo1}" /></td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.afiCampo2}" /></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>Motivo</td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.reasonDisaffil}" /></td>
+							</tr>
+
+							<tr>
+								<td><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.afiCampo3}" /></td>
+								<td align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.afiCampo4}" /></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+
+							<tr>
+								<td width="9%"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.afiCampo5}" /></td>
+								<td width="16%" align="center"><h:outputText
+										value="#{afiliacionesController.afiliacionesModel.afiliacionDetalle.afiCampo6}" /></td>
+								<td width="9%"></td>
+								<td width="16%"></td>
+								<td width="9%"></td>
+								<td width="16%"></td>
+								<td width="9%"></td>
+								<td width="16%"></td>
+							</tr>
+
+						</table>
+
+						<br></br>
+						<br></br>
+
+						<p:commandButton value="Cerrar" onclick="hide()" />
+
+
+					</p:fieldset>
+					<br />
+				</center>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false">
+			<img src="#{request.contextPath}/resources/img/ajaxloadingbar.gif" />
+			<!-- 			<p:graphicImage name="recursos/img/ajaxloadingbar.gif" /> -->
+		</p:dialog>
+
+
+		<p:dialog id="dialogBlock" widgetVar="detalleBloqueo" modal="true"
+			closable="true" appendTo="@(body)" resizable="false"
+			closeOnEscape="false" draggable="false" position="center"
+			showEffect="clip" hideEffect="clip" header="Detalle Bloqueo">
+			<h:form id="formDetalleBloqueo">
+
+
+				<center>
+					<!-- 					<p:panel> -->
+					<br></br>
+					<p:fieldset legend="DetalleBloqueo">
+
+						<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								actionListener="#{afiliacionesController.generarReporteAfiliacionesBloqueos(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+
+							<h:commandLink
+								actionListener="#{afiliacionesController.generarReporteAfiliacionesBloqueos(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+
+						<p:dataTable id="tablaDetalleBloqueo"
+							value="#{afiliacionesController.afiliacionesModel.listaDetalleBloqueos}"
+							var="consulta">
+
+							<p:columnGroup type="header">
+
+								<p:row>
+									<p:column rowspan="2" headerText="Item"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Hora"
+										style="text-align:center;vertical-align: middle" />
+
+								</p:row>
+
+							</p:columnGroup>
+
+							<p:column rowspan="2" headerText="Item"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.typeBlock}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Fecha"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.date}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Hora"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.dateHour}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br></br>
+						<br></br>
+
+						<p:commandButton value="Cerrar" onclick="hide()" />
+
+
+					</p:fieldset>
+					<br />
+				</center>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

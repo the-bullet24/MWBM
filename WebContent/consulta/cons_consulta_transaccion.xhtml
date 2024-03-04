@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formReporteConsulta">
+			<p:growl id="mensaje" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Estadístico por Consulta y Transacción"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<p:panelGrid columns="3" style="width:100%">
+
+							<p:panelGrid columns="1" style="width:100%">
+
+								<p:panelGrid columns="9" id="pgConsTran">
+									<p:panelGrid columns="1">
+										<p:outputLabel value="Periodo a consultar: "
+											style="font-weight:bold" />
+									</p:panelGrid>
+									<p:panelGrid columns="1">
+
+										<p:selectOneMenu style="text-align:left;"
+											value="#{consultaTransaccionController.consultaTransaccionModel.tipoBusquedaSeleccionada}">
+											<p:ajax event="change"
+												listener="#{consultaTransaccionController.obtenerFiltroBusqueda}"
+												update="formReporteConsulta:pgConsultaReporte formReporteConsulta:tablaConsultaReporte" />
+											<f:selectItems
+												value="#{consultaTransaccionController.consultaTransaccionModel.listaTipoBusqueda2}"
+												var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+												itemLabel="#{tipoBusqueda.descripcion}"
+												onChange="jsFunction()" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+
+
+									<p:selectOneMenu style="text-align:left;"
+										rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionOcultarFiltros}"
+										value="#{consultaTransaccionController.consultaTransaccionModel.tipoLogSeleccionado}">
+										<p:ajax event="change"
+											listener="#{consultaTransaccionController.consultaTransaccionModel.inicializarFecha}"
+											update="formReporteConsulta:maskFI" />
+										<p:ajax event="change"
+											listener="#{consultaTransaccionController.consultaTransaccionModel.inicializarFecha}"
+											update="formReporteConsulta:maskFF" />
+										<f:selectItem itemLabel="Seleccione" itemValue="" />
+										<f:selectItems
+											value="#{consultaTransaccionController.consultaTransaccionModel.listaTipoBusquedaLog}"
+											var="tipoBusquedaLog" itemValue="#{tipoBusquedaLog.id}"
+											itemLabel="#{tipoBusquedaLog.descripcion}"
+											onChange="jsFunction()" id="limpqwe" />
+									</p:selectOneMenu>
+
+
+									<p:panelGrid columns="1">
+										<p:outputLabel value="Fecha Inicial: "
+											style="font-weight:bold"
+											rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionOcultarFiltros}" />
+									</p:panelGrid>
+									<p:panelGrid columns="1" id="pgFechasBusquedaInicial">
+										<p:calendar locale="es" id="maskFI"
+											disabled="#{consultaTransaccionController.consultaTransaccionModel.buscarDiario}"
+											navigator="#{consultaTransaccionController.consultaTransaccionModel.bloquearFechaInicial}"
+											readonlyInput="#{consultaTransaccionController.consultaTransaccionModel.bloquearFechaInicial}"
+											rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionOcultarFiltros}"
+											
+											maxdate="#{consultaTransaccionController.consultaTransaccionModel.maxFechaInicioBusqueda}"
+											value="#{consultaTransaccionController.consultaTransaccionModel.fechaInicioBusqueda}"
+											pattern="dd/MM/yyyy" mask="true">
+										</p:calendar>
+									</p:panelGrid>
+
+									<p:panelGrid columns="1">
+										<p:outputLabel value="Fecha Final: " style="font-weight:bold"
+											rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionOcultarFiltros}" />
+									</p:panelGrid>
+
+									<p:panelGrid columns="1" id="pgFechasBusquedaFinal">
+										<p:calendar locale="es" id="maskFF" readonlyInput="true"
+											disabled="#{consultaTransaccionController.consultaTransaccionModel.buscarDiario}"
+											rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionOcultarFiltros}"
+											
+											maxdate="#{consultaTransaccionController.consultaTransaccionModel.maxFechaFinBusqueda}"
+											value="#{consultaTransaccionController.consultaTransaccionModel.fechaFinBusqueda}"
+											navigator="true" pattern="dd/MM/yyyy" mask="true">
+										</p:calendar>
+									</p:panelGrid>
+
+
+									<p:fieldset columns="1" legend="Periodo Inicial"
+										style="height:100px; width:260px"
+										rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionConsulta}">
+										<h:panelGrid columns="2" cellpadding="10">
+											<p:selectOneMenu style="text-align:left; margin-right:30px;"
+												value="#{consultaTransaccionController.consultaTransaccionModel.anioInicioSeleccionado}">
+
+												<f:selectItems
+													value="#{consultaTransaccionController.consultaTransaccionModel.listaAnios}"
+													var="año" itemValue="#{año.id}"
+													itemLabel="#{año.descripcion}" onChange="jsFunction()" />
+											</p:selectOneMenu>
+
+											<p:selectOneMenu style="text-align:left;"
+												value="#{consultaTransaccionController.consultaTransaccionModel.mesInicioSeleccionado}">
+
+												<f:selectItems
+													value="#{consultaTransaccionController.consultaTransaccionModel.listaMeses}"
+													var="mes" itemValue="#{mes.id}" itemLabel="#{mes.nombre}"
+													onChange="jsFunction()" />
+											</p:selectOneMenu>
+										</h:panelGrid>
+									</p:fieldset>
+
+									<p:fieldset columns="1" legend="Periodo Final"
+										style="height:100px ; width:260px"
+										rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionConsulta}">
+										<h:panelGrid columns="2" cellpadding="10">
+											<p:selectOneMenu style="text-align:left;"
+												value="#{consultaTransaccionController.consultaTransaccionModel.anioFinSeleccionado}">
+
+												<f:selectItems
+													value="#{consultaTransaccionController.consultaTransaccionModel.listaAnios}"
+													var="año" itemValue="#{año.id}"
+													itemLabel="#{año.descripcion}" onChange="jsFunction()" />
+											</p:selectOneMenu>
+											<p:selectOneMenu style="text-align:left;"
+												value="#{consultaTransaccionController.consultaTransaccionModel.mesFinSeleccionado}">
+
+												<f:selectItems
+													value="#{consultaTransaccionController.consultaTransaccionModel.listaMeses}"
+													var="mes" itemValue="#{mes.id}" itemLabel="#{mes.nombre}"
+													onChange="jsFunction()" />
+											</p:selectOneMenu>
+										</h:panelGrid>
+									</p:fieldset>
+
+
+								<p:fieldset   columns="1" legend="Periodo Inicial" style="height:100px; width:260px"
+                               rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionConsulta}">
+                               <h:panelGrid columns="2" cellpadding="10">
+       							<p:selectOneMenu style="text-align:left; margin-right:30px;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.anioInicioSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaAnios}"
+                                            var="año" itemValue="#{año.id}"
+                                            itemLabel="#{año.descripcion}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.mesInicioSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaMeses}"
+                                            var="mes" itemValue="#{mes.id}"
+                                            itemLabel="#{mes.nombre}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+   							 </p:fieldset>
+   							 
+   							  <p:fieldset   columns="1" legend="Periodo Final" style="height:100px ; width:260px"
+   							   rendered="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.opcionConsulta}">
+   							   	  <h:panelGrid columns="2" cellpadding="10">
+       							<p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.anioFinSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaAnios}"
+                                            var="año" itemValue="#{año.id}"
+                                            itemLabel="#{año.descripcion}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                    <p:selectOneMenu style="text-align:left;"
+                                        value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.mesFinSeleccionado}">
+                                     
+                                        <f:selectItems
+                                            value="#{consultaReporteClienteSMSController.consultaReporteClienteSMSModel.listaMeses}"
+                                            var="mes" itemValue="#{mes.id}"
+                                            itemLabel="#{mes.nombre}" onChange="jsFunction()"/>
+                                    </p:selectOneMenu>
+                                    </h:panelGrid>
+   							 </p:fieldset>
+
+
+
+									<h:outputText value="Filtrar por:" 
+									rendered="#{consultaTransaccionController.consultaTransaccionModel.opcionOcultarFiltros}"
+									style="font-weight:bold"></h:outputText>
+
+									<p:selectOneMenu style="text-align:left;" id="pgFiltrarpor"
+
+										converter="omnifaces.SelectItemsConverter"
+										value="#{operacionesMVController.operacionesMVModel.tipoBusquedaServicioTransaccion}">
+
+										<p:ajax event="change"
+											listener="#{operacionesMVController.obtenerFiltroServicioTransaccion()}"
+											update="formReporteConsulta:pgFiltros formReporteConsulta:pgBuscarTasas" />
+										
+										<f:selectItem itemLabel="TODOS" itemValue=""/>
+										<f:selectItems
+											value="#{consultaTransaccionController.consultaTransaccionModel.listTipoBusquedaServicioTransaccion}"
+											var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+											itemLabel="#{tipoBusqueda.descripcion}"
+											onChange="jsFunction()" id="limpia" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" style="width:50%">
+
+									<p:panelGrid columns="2" style="width:100%">
+
+										<p:panelGrid columns="4" style="width:80%" id="pgFiltros">
+
+											<h:outputText value="Tipo de Operación:"
+												style="font-weight:bold; text-align:left;"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTransaccion}"></h:outputText>
+
+
+											<p:selectOneMenu style="text-align:left;"
+												id="pgComboTransaccion"
+												converter="omnifaces.SelectItemsConverter"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTransaccion}"
+												value="#{operacionesMVController.operacionesMVModel.busquedaTipoOperacion}">
+
+												<p:ajax event="change" process="@this"
+													listener="#{operacionesMVController.obtenerFiltroTipoTransaccion}"
+													update="formReporteConsulta:pgFiltros formReporteConsulta:pgComboTipoOperacion" />
+
+												<f:selectItems
+													value="#{operacionesMVController.operacionesMVModel.listaTipoOperacion}"
+													var="tipoOperacion" itemValue="#{tipoOperacion.code}"
+													itemLabel="#{tipoOperacion.name}" />
+											</p:selectOneMenu>
+
+
+
+
+											<h:outputText value="Transacción:" style="font-weight:bold"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroTransaccion}"></h:outputText>
+
+
+
+											<p:selectOneMenu style="text-align:left;"
+												id="pgComboTipoOperacion"
+												converter="omnifaces.SelectItemsConverter"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroTransaccion}"
+												value="#{consultaTransaccionController.consultaTransaccionModel.codigoTransaccion}">
+												<f:selectItems
+													value="#{operacionesMVController.operacionesMVModel.listaTransaccionMV}"
+													var="tipoTransaccion"
+													itemValue="#{tipoTransaccion.TXTHLPDAT}"
+													itemLabel="#{tipoTransaccion.TXTHLPDAT} - #{tipoTransaccion.TXTHLP}" />
+											</p:selectOneMenu>
+
+											<h:outputText value="Servicio:" style="font-weight:bold"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboServicio}"></h:outputText>
+
+
+											<p:selectOneMenu style="text-align:left;"
+												id="pgComboServicio"
+												converter="omnifaces.SelectItemsConverter"
+												value="#{operacionesMVController.operacionesMVModel.codigoGrupoServicio}"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboServicio}">
+
+												<p:ajax event="change" process="@this"
+													listener="#{operacionesMVController.obtenerFiltroTipoServicio}"
+													update="formReporteConsulta:pgFiltros formReporteConsulta:pgComboTipoServicio" />
+												<f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<f:selectItems
+													value="#{operacionesMVController.operacionesMVModel.listaGrupoServicioMV}"
+													var="grupoServicio" itemValue="#{grupoServicio.TXTHLPDAT}"
+													itemLabel="#{grupoServicio.TXTHLP}" />
+											</p:selectOneMenu>
+
+
+
+											<h:outputText value="Tipo de Servicio"
+												style="font-weight:bold"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroServicio}"></h:outputText>
+
+											<p:selectOneMenu style="text-align:left;"
+												id="pgComboTipoServicio"
+												converter="omnifaces.SelectItemsConverter"
+												rendered="#{operacionesMVController.operacionesMVModel.opcionOcultarFiltroServicio}"
+												value="#{consultaTransaccionController.consultaTransaccionModel.codigoTipoServicio}">
+
+												<f:selectItem itemLabel="Seleccione" itemValue="0" />
+												<f:selectItems
+													value="#{operacionesMVController.operacionesMVModel.listaTipoServicio}"
+													var="tipoServicio" itemValue="#{tipoServicio.CODSER}"
+													itemLabel="#{tipoServicio.TXTHLP}" />
+											</p:selectOneMenu>
+
+										</p:panelGrid>
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="3" style="width:25%" id="pgBuscarTasas">
+
+										<p:outputLabel value="Buscar por: " style="font-weight:bold"
+											rendered="#{operacionesMVController.operacionesMVModel.opcionMostrarComboTasas}" />
+
+									</p:panelGrid>
+
+								</p:panelGrid>
+
+							</p:panelGrid>
+
+							<center>
+
+								<p:commandButton value="Buscar" id="consultarClave"
+									update="formReporteConsulta:pgConsultaReporte formReporteConsulta:tablaConsultaReporte formReporteConsulta:mensaje"
+									onclick="statusDialog.show();"
+									oncomplete="statusDialog.hide();"
+									actionListener="#{consultaTransaccionController.obtenerConsultaTransaccion}"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+							</center>
+
+						</p:panelGrid>
+					</p:fieldset>
+				</p:panelGrid>
+
+				<p:panelGrid id="pgConsultaReporte" columns="1" style="width:100%">
+					<p:fieldset id="fieldSetConsulta"
+						rendered="#{consultaTransaccionController.consultaTransaccionModel.busquedaNoRealizada()}">
+
+						<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{consultaTransaccionController.consultaTransaccionModel.existeConsultasNoEncontradas()}" />
+
+						<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								rendered="#{consultaTransaccionController.consultaTransaccionModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaTransaccionController.generarReporte(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{consultaTransaccionController.consultaTransaccionModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaTransaccionController.generarReporte(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+
+						<p:dataTable id="tablaConsultaReporte"
+							value="#{consultaTransaccionController.consultaTransaccionModel.listaConsultaTransaccionFinal}"
+							var="consulta" paginator="true" paginatorPosition="bottom"
+							rows="10" style="table-layout: fixed;"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+							rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Cod. Trans"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Transacción"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Cantidad" 
+										style="text-align:center;vertical-align: middle"/>
+										
+									<p:column rowspan="2" headerText="Procesadas" 
+										style="text-align:center;vertical-align: middle"/>	
+
+									<p:column rowspan="2" headerText="Fallidas" 
+										style="text-align:center;vertical-align: middle"/>
+								</p:row>
+							</p:columnGroup>
+
+							<p:column rowspan="2" headerText="Fecha"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.FECHA}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Cod. Trans"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.CODTRAHST}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Transacción"
+								style="text-align:left;vertical-align: middle">
+								<h:outputText value="#{consulta.DESLARGA}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Cantidad"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.CANTIDAD}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Procesadas"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.PROCESADAS}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Fallidas"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.FALLIDAS}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:fieldset>
+				</p:panelGrid>
+
+			</center>
+		</h:form>
+	</ui:define>
+</ui:composition>

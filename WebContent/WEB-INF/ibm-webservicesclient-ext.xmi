@@ -1,0 +1,12 @@
+	<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.etools.webservice.wscext:WsClientExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.etools.webservice.wscext="http://www.ibm.com/websphere/appserver/schemas/5.0.2/wscext.xmi" xmi:id="WsClientExtension_1542316724210">
+  <serviceRefs xmi:id="ServiceRef_1575304201688" serviceRefLink="service/ServicioNotificacionService">
+    <portQnameBindings xmi:id="PortQnameBinding_1575304201688" portQnameLocalNameLink="ServicioNotificacion"/>
+  </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1705001448396" serviceRefLink="service/BducWebserviceService">
+    <portQnameBindings xmi:id="PortQnameBinding_1705001448396" portQnameLocalNameLink="BducWebservice"/>
+  </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1705001493534" serviceRefLink="service/AutenticaRegService">
+    <portQnameBindings xmi:id="PortQnameBinding_1705001493534" portQnameLocalNameLink="AutenticaReg"/>
+  </serviceRefs>
+</com.ibm.etools.webservice.wscext:WsClientExtension>

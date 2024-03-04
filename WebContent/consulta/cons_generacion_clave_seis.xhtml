@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata"></ui:define>
+
+									<script type="text/javascript">
+										function validar(e) {
+											var tecla = e.keyCode;
+
+											if (tecla == 8 || tecla == 9
+													|| tecla == 13) {
+												return true;
+											}
+
+											//var patron =/[0-9]/;
+											var patron = /[0-9]/;
+											var tecla_final = String
+													.fromCharCode(tecla);
+											return patron.test(tecla_final);
+										}
+									</script>
+
+	<ui:define name="content">
+		<h:form id="formOpeGeneracion">
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel
+					value="Consulta de Operaciones de Reseteo Clave 6 - Caducidad"
+					style="font-weight:bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<p:panelGrid columns="3">
+
+							<p:panelGrid columns="8" id="pgFiltros">
+								<p:outputLabel value="Desde:" style="font-weight:bold;font:11px 'daxcompact-mediumregular'" />
+								<p:calendar locale="es" id="maskFI" readonlyInput="true"
+									navigator="true"
+									maxdate="#{generacionClaveSeisController.generacionModel.maxFechaInicioBusqueda}"
+									value="#{generacionClaveSeisController.generacionModel.fechaInicioBusqueda}"
+									pattern="dd/MM/yyyy" mask="true">
+								</p:calendar>
+								<h:outputText value="Hasta"></h:outputText>
+								<p:calendar locale="es" id="maskFF" readonlyInput="true"
+									maxdate="#{generacionClaveSeisController.generacionModel.maxFechaFinBusqueda}"
+									value="#{generacionClaveSeisController.generacionModel.fechaFinBusqueda}"
+									navigator="true" pattern="dd/MM/yyyy" mask="true">
+								</p:calendar>
+								
+								<p:panelGrid columns="2" id="pgTarjeta">								
+									<p:outputLabel value="Tarjeta:" style="font-weight:bold;font:11px 'daxcompact-mediumregular'"/>
+									<p:inputText id="itTarjeta"
+										value="#{generacionClaveSeisController.generacionModel.numTarjeta}"
+										onkeypress="return validar(event)"></p:inputText>
+								</p:panelGrid>
+
+								<p:panelGrid columns="3" id="pgTipoDocumento">
+									<p:outputLabel value="Tipo Documento:" style="font-weight:bold;font:11px 'daxcompact-mediumregular'"/>
+										<p:selectOneMenu style="text-align:left;" effect="fade"
+											converter="omnifaces.SelectItemsConverter"
+											value="#{generacionClaveSeisController.generacionModel.tipoDocumento}">
+											<p:ajax event="change"
+												listener="#{generacionClaveSeisController.generacionModel.inicializarNumDocumento}"
+												update="formOpeGeneracion:itNumDocumento" />
+											<f:selectItem itemLabel="SELECCIONE" itemValue="0"/>
+											<f:selectItems
+												value="#{generacionClaveSeisController.generacionModel.listaTipoDocumento}"
+												var="tipoDoc" itemValue="#{tipoDoc.code}"
+												itemLabel="#{tipoDoc.name}" />
+									 </p:selectOneMenu>
+								
+									<p:panelGrid columns="2" id="pgDocumento">								
+										<p:outputLabel value="Nro. Documento:" style="font-weight:bold;font:11px 'daxcompact-mediumregular'"/>
+										<p:inputText id="itNumDocumento"
+											disabled="#{generacionClaveSeisController.generacionModel.ninguno}"
+											value="#{generacionClaveSeisController.generacionModel.numDocumento}"
+											maxlength="#{generacionClaveSeisController.generacionModel.maxLength}"
+											onkeypress="return validar(event)"></p:inputText>
+									</p:panelGrid>							
+								</p:panelGrid>
+								
+																	
+								<p:panelGrid columns="2" id="pgEstado">								
+									<p:panelGrid columns="1">
+									<h:outputText value="Estado Operacion:" style="font-weight:bold"></h:outputText>
+									</p:panelGrid>
+									<p:panelGrid columns="1">
+										<p:selectOneMenu style="text-align:left;"
+											value="#{generacionClaveSeisController.generacionModel.idEstadoOperacionSeleccionado}">
+											<f:selectItem itemLabel="Todos" itemValue="all" />
+											<f:selectItems
+												value="#{generacionClaveSeisController.generacionModel.listaEstadoOperacion}"
+												var="estadoOperacion" itemValue="#{estadoOperacion.id}"
+												itemLabel="#{estadoOperacion.descripcion}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+								</p:panelGrid>	
+
+								<p:panelGrid columns="2" id="pgcanal">								
+									<p:panelGrid columns="1">
+									<h:outputText value="Canal:" style="font-weight:bold"></h:outputText>
+									</p:panelGrid>
+									<p:panelGrid columns="1">
+										<p:selectOneMenu style="text-align:left;"
+											value="#{generacionClaveSeisController.generacionModel.idTipoCanalSeleccionado}">
+											<f:selectItem itemLabel="Todos" itemValue="all" />
+											<f:selectItems
+												value="#{generacionClaveSeisController.generacionModel.listaTipoCanal}"
+												var="canal" itemValue="#{canal.id}"
+												itemLabel="#{canal.descripcion}" />
+										</p:selectOneMenu>
+									</p:panelGrid>
+								</p:panelGrid>									
+								
+							</p:panelGrid>
+
+
+							<p:commandButton value="Buscar" id="find"
+								update="formOpeGeneracion" onclick="statusDialog.show();"
+								oncomplete="statusDialog.hide();"
+								actionListener="#{generacionClaveSeisController.buscarOperacionesRealizadas()}"
+								icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+
+
+						</p:panelGrid>
+
+					</p:fieldset>
+				</p:panelGrid>
+
+				<p:panelGrid id="pgOperacionesRealizadas" columns="1" style="width:100%">
+				
+						<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								actionListener="#{generacionClaveSeisController.generarPdf()}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								actionListener="#{generacionClaveSeisController.generarExcel()}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+				
+					<p:dataTable id="tablaOperaciones"
+							value="#{generacionClaveSeisController.lazyDataModel}"
+							var="operacion" 
+							paginator="true" 
+							paginatorPosition="bottom"
+							rows="10" style="table-layout: fixed;"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,15,20,25"
+							emptyMessage="No hay operaciones realizadas" 
+							lazy="true">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="Fecha"
+										style="text-align:center;vertical-align: middle" />
+							
+									<p:column rowspan="2" headerText="Canal"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Transacción"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Cic"
+										style="text-align:center;vertical-align: middle" />
+									
+									<p:column rowspan="2" headerText="Tipo Doc."
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Num Doc."
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Tipo Tarjeta"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Num Tarjeta"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Email"
+										style="text-align:center;vertical-align: middle" />	
+									
+									<p:column rowspan="2" headerText="Tipo Token"
+										style="text-align:center;vertical-align: middle" />	
+										
+									<p:column rowspan="2" headerText="Resultado"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Detalle Error"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Constancia"
+										style="text-align:center;vertical-align: middle" />
+								</p:row>
+							</p:columnGroup>
+
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.fechaLog}">
+									<f:convertDateTime type="date" pattern="dd/MM/yyyy hh:mm:ss a" />
+								</h:outputText>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.canal}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.desTrans}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.cicClte == 0 ? '--' : operacion.cicClte}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.tipoDocumento}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.numDocumento}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.tipoTarjeta}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.numTarjeta}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.emailOut}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.tipoToken == null ? '--' : operacion.tipoToken}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{operacion.flagError}"/>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<p:commandButton rendered="#{operacion.flagError == 'ERROR'}"
+									icon="#{cad['icono.buscar']}"
+									oncomplete="detalleMensaje.show();"
+									update=":formDetalleMensaje"
+									actionListener="#{generacionClaveSeisController.consultarMensajeError(operacion)}">
+								</p:commandButton>
+							</p:column>
+							<p:column rowspan="2"
+								style="text-align:center;vertical-align: middle">
+								<p:commandButton 
+									rendered="#{generacionClaveSeisController.activarEnvioConstancia(operacion)}"
+									icon="#{cad['icono.redireccionar']}"
+									actionListener="#{generacionClaveSeisController.cargarDatosConstanciaOperacion(operacion)}"
+									styleClass="boton-operaciones" title="Enviar constancia">
+								</p:commandButton>
+							</p:column>
+							</p:dataTable>
+				
+				
+				</p:panelGrid>
+			</center>
+		</h:form>
+		
+			<p:dialog widgetVar="detalleMensaje" modal="true" closable="true"
+				appendTo="@(body)" resizable="false" closeOnEscape="false"
+				draggable="false" position="center" showEffect="clip"
+				hideEffect="clip" header="Detalle mensaje error">
+				<h:form id="formDetalleMensaje">
+					<center>
+					<p:panel>
+						<br></br>
+						<p:fieldset legend="Datos del mensaje">
+							<p:panelGrid columns="2">
+								<h:outputText value="Código de app: " />
+								<h:outputText value="#{generacionClaveSeisController.generacionModel.detalleMensaje.codApp}" />
+								
+								<h:outputText value="Código de mensaje: " />
+								<h:outputText value="#{generacionClaveSeisController.generacionModel.detalleMensaje.codRet}" />
+								
+								<h:outputText value="Mensaje técnico: " />
+								<h:outputText value="#{generacionClaveSeisController.generacionModel.detalleMensaje.msgRet}" />
+								
+								<h:outputText value="Mensaje cliente: " />
+								<h:outputText value="#{generacionClaveSeisController.generacionModel.detalleMensaje.msgRetClte}" />
+							</p:panelGrid>
+						</p:fieldset>
+						<br />
+						</p:panel>
+					</center>
+				</h:form>
+			</p:dialog>
+			
+			<p:dialog widgetVar="enviarConstanciaWidget"
+					modal="true" appendTo="@(body)" resizable="false"
+					closeOnEscape="false" closable="false" position="center"
+					showEffect="clip" draggable="false" hideEffect="clip"
+					header="Enviar constancia de operacion">
+					<h:form id="formEnviarConstancia">
+		
+					<p:fieldset legend="Constancia de Reseteo de Clave 6 - Caducidad">
+					<br />
+					<br />
+					<p:panelGrid columns="2">
+						<h:outputText value="Canal empleado:" style="font-weight: bolder;" />
+						<h:outputText
+							value="#{generacionClaveSeisController.generacionModel.claveSeis.canalEmpleado}" />
+
+						<h:outputText value="Nro. Tarjeta:"
+							style="font-weight: bolder;" />
+						<h:outputText
+							value="#{generacionClaveSeisController.generacionModel.claveSeis.nroTarjeta}" />
+
+						<h:outputText value="Tipo y Número Documento:"
+							style="font-weight: bolder;" />
+						<h:outputText
+							value="#{generacionClaveSeisController.generacionModel.claveSeis.tipoNumDpcumento}" 
+							style="font-weight:bold;"/>
+
+						<h:outputText value="Email:"
+							style="font-weight: bolder;" />
+						<h:outputText
+							value="#{generacionClaveSeisController.generacionModel.claveSeis.email}" />
+
+						<h:outputText value="Fecha y Hora:" 
+						style="font-weight: bolder;" />
+						<h:outputText
+							value="#{generacionClaveSeisController.generacionModel.claveSeis.fechaOperacion}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+						</h:outputText>
+							
+
+					</p:panelGrid>
+					<br />
+					<br />
+				</p:fieldset>
+				<p:fieldset legend="Datos de envio">
+					<p:panelGrid columns="1">
+						<p:selectOneRadio id="console"
+							value="#{generacionClaveSeisController.generacionModel.opcionEmail}">
+							<p:ajax event="change"
+								update="formEnviarConstancia:itEmailPanelGrid" />
+							<f:selectItem itemLabel="Correo original" itemValue="1" />
+							<f:selectItem itemLabel="Correo alternativo" itemValue="2" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					<p:panelGrid columns="2" id="itEmailPanelGrid">
+						<h:outputText value="Correo electronico:"
+							style="font-weight: bolder;" />
+						<h:outputText
+							rendered="#{generacionClaveSeisController.generacionModel.opcionEmail eq 1}"
+							value="#{generacionClaveSeisController.generacionModel.claveSeis.email}" />
+						<p:inputText
+							rendered="#{generacionClaveSeisController.generacionModel.opcionEmail eq 2}"
+							size="50" id="itEmailAlternativo"
+							value="#{generacionClaveSeisController.generacionModel.emailAlternativo}"
+							disabled="#{generacionClaveSeisController.generacionModel.opcionEmail eq 1 ? 'true' : 'false'}" />
+					</p:panelGrid>
+				</p:fieldset>
+				<br />
+				<center>
+					<p:commandButton value="Reenviar" styleClass="boton-operaciones"
+						onclick="enviarConstanciaWidget.hide();confirmarEnvioConstanciaWidget.show();"
+						icon="#{cad['icono.redireccionar']}" />
+					<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+						onclick="enviarConstanciaWidget.hide();"
+						icon="#{cad['icono.cancelar']}" />
+				</center>
+			</h:form>
+			
+		</p:dialog>
+		
+		
+		<p:dialog widgetVar="enviarConstanciaSatiWidget" modal="true"
+			appendTo="@(body)" resizable="false" closeOnEscape="false"
+			closable="false" position="center" showEffect="clip"
+			draggable="false" hideEffect="clip"
+			header="Enviar Constancia de Operación">
+			<h:form id="formEnviarConstanciaSati">
+		
+		<br/>
+			<p:fieldset legend="ENVIO DE CORREO ELECTRONICO">
+					
+					<p:panelGrid columns="2" id="itEmailPanelGrid">
+						<h:outputText value="Para:"
+							style="font-weight: bolder;" />		
+						<p:inputText
+							size="50" id="itEmailTitular"
+							value="#{generacionClaveSeisController.generacionModel.emailTitular}"/>
+						<h:outputText value="CC: "
+							style="font-weight: bolder;" />		
+						<p:inputText
+							size="50" id="itEmailCC"
+							value="#{generacionClaveSeisController.generacionModel.emailAlternativoSati}"/>
+						<h:outputText value="Asunto: "
+							style="font-weight: bolder;" />		
+						<h:outputLabel
+							size="50" id="itAsunto"
+							value="BANCO DE LA NACION - Duplicado de Constancias"/>
+					</p:panelGrid>
+				</p:fieldset>
+			
+				<br/>
+				<br/>
+			<h:outputText value="#{generacionClaveSeisController.generacionModel.constanciaSati}"  escape="false" style="user-select: none; pointer-events: none;"/>
+					<br/>
+					<br/>
+				<center>
+						<p:commandButton value="Reenviar" styleClass="boton-operaciones"
+							onclick="confirmarEnvioConstanciaSatiWidget.show();enviarConstanciaSatiWidget.hide()"
+							icon="#{cad['icono.redireccionar']}" />
+						
+						<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+							onclick="enviarConstanciaSatiWidget.hide();"
+							icon="#{cad['icono.cancelar']}" />	
+				</center>
+						
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog widgetVar="confirmarEnvioConstanciaWidget" modal="true"
+			closable="false" appendTo="@(body)" resizable="false"
+			closeOnEscape="false" draggable="false" position="center"
+			showEffect="clip" hideEffect="clip" header="Confirmar">
+			<h:form id="formConfirmarEnvio">
+				<center>
+					<p:panel>
+						<br></br>
+							 ¿Esta seguro de reenviar la constancia de operacion?
+						<br />
+						<br></br>
+						<p:commandButton value="Aceptar" styleClass="boton-operaciones"
+							icon="#{cad['icono.validar.aceptar']}"
+							onclick="statusDialog.show();confirmarEnvioConstanciaWidget.hide();"
+							actionListener="#{generacionClaveSeisController.reenviarConstanciaOperacion()}"
+							oncomplete="statusDialog.hide();" />
+
+						<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+							onclick="statusDialog.show();"
+							oncomplete="statusDialog.hide();confirmarEnvioConstanciaWidget.hide();"
+							icon="#{cad['icono.cancelar']}" />
+					</p:panel>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="confirmarEnvioConstanciaSatiWidget" modal="true"
+			closable="false" appendTo="@(body)" resizable="false"
+			closeOnEscape="false" draggable="false" position="center"
+			showEffect="clip" hideEffect="clip" header="Confirmar">
+			<h:form id="formConfirmarEnvioSati">
+				<center>
+					<p:panel>
+						<br></br>
+							 ¿Esta seguro de reenviar la constancia de operacion?
+						<br />
+						<br></br>
+						<p:commandButton value="Aceptar" styleClass="boton-operaciones"
+							icon="#{cad['icono.validar.aceptar']}"
+							onclick="statusDialog.show();confirmarEnvioConstanciaSatiWidget.hide();"
+							actionListener="#{generacionClaveSeisController.reenviarConstanciaSatiOperacion()}"
+							oncomplete="statusDialog.hide();" />
+
+						<p:commandButton value="Cancelar" styleClass="boton-operaciones"
+							onclick="statusDialog.show();"
+							oncomplete="statusDialog.hide();confirmarEnvioConstanciaSatiWidget.hide();"
+							icon="#{cad['icono.cancelar']}" />
+					</p:panel>
+				</center>
+			</h:form>
+		</p:dialog>
+		
+		
+	</ui:define>
+
+</ui:composition>

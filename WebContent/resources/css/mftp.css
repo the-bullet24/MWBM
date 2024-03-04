@@ -1,0 +1,100 @@
+.pagina {
+	width: 100%;
+}
+
+.body {
+	width: 1300px;
+	margin: 0 auto;
+}
+
+.titulo {
+	width: 300px;
+	font-size: 25px;
+	margin: 0 auto;
+	padding: 10px 0px 0px 0px;
+}
+
+.fecha {
+	font-size: 15px;
+}
+
+.calen input {
+	width: 100px;
+}
+
+.panelRut .ui-widget-content {
+	background-color: transparent !important;
+}
+
+.panelRut {
+	background-color: transparent !important;
+	border: none;
+}
+
+.inputId {
+	opacity: 1 !important;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)"
+		!important;
+	filter: alpha(opacity =   100) !important;
+	color: black !important;
+}
+
+.inputRegDDiv, .inputRegDDiv input{
+	width: 140px;
+}
+.elemento_bloqueado,.elemento_bloqueado input{
+	background-color:#FBFFAE !important;
+}
+.elemento_desbloqueado,.elemento_desbloqueado input{
+	background-color:#FFFFFF !important;
+}
+.ui-clock, clock{
+	background-color: #FBFFAE !important;
+	
+}
+
+/* Firstly Hide the unnecessary components */
+.ui-fileupload .start {
+    display: none;
+}
+.ui-fileupload .cancel {
+    display: none;
+}
+.ui-fileupload .progress {
+  /*  display: none; - if you wanted to hide the progress bar as well*/
+}
+.ui-fileupload  {
+    border: none;
+}
+.ui-progressbar {  /* made progress bar smaller to fit on same line */
+    width: 0px!important;
+    height: 0px!important;
+}
+.fileupload-buttonbar .fileinput-button .ui-icon-plusthick { /* remove icon from browse button */
+    display: none !important;
+}
+.fileupload-buttonbar .fileinput-button  .ui-button-text { /* removed icon from browse button so shifting text left*/
+    padding-left: 1em!important;
+}
+.ui-fileupload .fileupload-buttonbar {
+    border: none!important;
+    background: transparent;
+    background-color: transparent;
+    float: left; /* Keep button on left */
+} 
+.fileupload-content {
+    border: none!important;
+    border-bottom-left-radius: 0px!important;
+    border-bottom-right-radius: 0px!important;
+    background: transparent!important;
+    background-color: transparent!important;
+    float: right; /* and content on right */
+}
+
+.noEncontrado {	
+	color: #FA2323;    
+}
+
+.capitalized {
+    text-transform: capitalize;
+}

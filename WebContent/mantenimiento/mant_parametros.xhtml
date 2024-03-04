@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="../plantilla/plantilla.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formMantParametros">
+			<br />
+			
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			<center>
+				<h:outputText value="Mantenimientos de parametros"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br />
+			</center>
+			<br />
+			<br />
+			
+			<pe:tooltip id="tooltip" global="true" for="@(.ui-state-error)"
+				header="Error" myPosition="left center" atPosition="right center" />
+
+			<p:panelGrid columns="2" style="width:100%;">
+				<p:fieldset style="padding-bottom: 3%;">
+					<br></br>
+					<h:outputText value="Grupo parametro : "
+						style="margin: 0 1% 0 10%;">
+					</h:outputText>
+					<p:selectOneMenu id="listaTablas"
+						value="#{parametrosController.parametrosModel.tablaSeleccionada.idTabla}">
+						<p:ajax
+							listener="#{parametrosController.actualizarDescripcionTablaSeleccionada}" />
+						<p:ajax
+							listener="#{parametrosController.listarParametrosPorTabla}"
+							onstart="statusDialog.show();"
+							oncomplete="statusDialog.hide();widgetTablaParametros.clearFilters();"
+							update=":formMantParametros" />
+						<f:selectItem itemValue="#{null}" itemLabel="SELECCIONE"></f:selectItem>
+						<f:selectItems
+							value="#{parametrosController.parametrosModel.listaTablas}"
+							var="tabla" itemValue="#{tabla.idTabla}"
+							itemLabel="#{tabla.descripcionTabla}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<br></br>
+
+
+				</p:fieldset>
+			</p:panelGrid>
+
+			<p:panelGrid columns="1" style="width:100%;">
+				<p:fieldset
+					rendered="#{parametrosController.parametrosModel.renderizarTablaParametros() || parametrosController.parametrosModel.renderizarTablaMensajes()}">
+					<p:commandButton style="margin: 0 10% 1% 0; float: right"
+						value="Agregar Parametro" id="btnAgregarParametro"
+						actionListener="#{parametrosController.iniciarAgregarParametro()}"
+						update=":formAgregarParametro :formAgregarVersion :formAgregarMensaje"
+						rendered="#{parametrosController.parametrosModel.validarTabla()}">
+						<p:resetInput
+							target=":formAgregarParametro :formAgregarVersion :formAgregarMensaje" />
+					</p:commandButton>
+
+					<br></br>
+					<center>
+						<p:dataTable id="tablaParametros" var="parametro" paginator="true"
+							paginatorPosition="bottom" rows="5"
+							widgetVar="widgetTablaParametros"
+							rendered="#{parametrosController.parametrosModel.renderizarTablaParametros()}"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{currentPage} de {totalPages}"
+							emptyMessage="No hay parametros disponibles."
+							value="#{parametrosController.parametrosModel.listaParametros}"
+							rowsPerPageTemplate="5,10,15"
+							style="text-align:center; width:80%"
+							filteredValue="#{parametrosController.parametrosModel.listaParametrosFiltrada}">
+
+							<p:column headerText="Nro" style="width: 5%"
+								sortBy="#{parametro.codigoItem}">
+								<h:outputText value="#{parametro.codigoItem}">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="DESCRIPCION CORTA" style="width: 25%"
+								filterBy="#{parametro.descripcionItemCorta}"
+								filterMatchMode="contains"
+								rendered="#{parametrosController.parametrosModel.renderizarRegistroParametro()}">
+								<h:outputText value="#{parametro.descripcionItemCorta}">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="DESCRIPCION LARGA" style="width: 35%"
+								filterBy="#{parametro.descripcionItemLarga}"
+								filterMatchMode="contains">
+								<h:outputText value="#{parametro.descripcionItemLarga}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="VALOR" style="width: 15%">
+								<h:outputText value="#{parametro.valorItem}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="ESTADO" style="width: 10%">
+								<h:outputText
+									value="#{parametrosController.obtenerNombreEstado(parametro.estadoItem)}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="OPCION" style="width: 10%"
+								rendered="#{parametrosController.parametrosModel.renderizarActualizacionParametro()}">
+								<center>
+									<p:commandButton title="Editar"
+										icon="ui-icon-arrowreturnthick-1-w"
+										oncomplete="dlgWvModificarParametro.show();"
+										action="#{parametrosController.iniciarModificarParametro(parametro)}"
+										update=":formModificarParametro">
+										<p:resetInput target=":formModificarParametro" />
+									</p:commandButton>
+
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+
+						<p:dataTable id="tablaParametrosVersiones" var="version"
+							rendered="#{parametrosController.parametrosModel.renderizarTablaVersiones()}"
+							paginator="true" paginatorPosition="bottom" rows="5"
+							widgetVar="widgetTablaParametros"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{currentPage} de {totalPages}"
+							emptyMessage="No hay versiones disponibles."
+							value="#{parametrosController.parametrosModel.listaVersiones}"
+							rowsPerPageTemplate="5,10,15"
+							style="text-align:center; width:80%"
+							filteredValue="#{parametrosController.parametrosModel.listaVersionesFiltrada}">
+
+							<p:column headerText="COD.APLICACION" sortBy="#{version.codApp}"
+								filterBy="#{version.codApp}" filterMatchMode="contains"
+								style="width: 5%">
+								<h:outputText value="#{version.codApp}">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="S.O APP" filterBy="#{version.soApp}"
+								sortBy="#{version.soApp}" filterMatchMode="contains"
+								style="width: 25%">
+								<h:outputText value="#{version.soApp}">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="VERSION APP" filterBy="#{version.versApp}"
+								sortBy="#{version.versApp}" filterMatchMode="contains"
+								style="width: 35%">
+								<h:outputText value="#{version.versApp}" style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="NOMBRE APP" style="width: 15%"
+								filterBy="#{version.nombApp}" filterMatchMode="contains">
+								<h:outputText value="#{version.nombApp}" style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="OBLIGATORIO APP" style="width: 10%">
+								<h:outputText
+									value="#{parametrosController.obtenerNombreObligatorioVersion(version.goblib)}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="ESTADO APP" style="width: 10%">
+								<h:outputText
+									value="#{parametrosController.obtenerNombreEstadoVersion(version.gEstado)}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="OPCION" style="width: 10%"
+								rendered="#{parametrosController.parametrosModel.renderizarActualizacionParametro()}">
+								<center>
+									<p:commandButton title="Editar"
+										icon="ui-icon-arrowreturnthick-1-w"
+										oncomplete="dlgWvModificarVersion.show();"
+										action="#{parametrosController.iniciarModificarVersion(version)}"
+										update=":formModificarVersion">
+										<p:resetInput target=":formModificarVersion" />
+									</p:commandButton>
+
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+
+						<p:dataTable id="tablaParametrosMensajes" var="mensaje"
+							rendered="#{parametrosController.parametrosModel.renderizarTablaMensajes()}"
+							paginator="true" paginatorPosition="bottom" rows="5"
+							widgetVar="widgetTablaParametros"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{currentPage} de {totalPages}"
+							emptyMessage="No hay mensajes disponibles."
+							value="#{parametrosController.parametrosModel.listaMensajes}"
+							rowsPerPageTemplate="5,10,15"
+							style="text-align:center; width:80%"
+							filteredValue="#{parametrosController.parametrosModel.listaMensajesFiltrada}">
+
+							<p:column headerText="COD. APLICACION" sortBy="#{mensaje.codApp}"
+								filterBy="#{mensaje.codApp}" filterMatchMode="contains"
+								style="width: 5%">
+								<h:outputText value="#{mensaje.codApp}">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="COD. MENSAJE RETENCION"
+								sortBy="#{mensaje.codRet}" filterBy="#{mensaje.codRet}"
+								filterMatchMode="contains" style="width: 25%">
+								<h:outputText value="#{mensaje.codRet}">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="MENSAJE RETENCION"
+								sortBy="#{mensaje.msgRet}" filterBy="#{mensaje.msgRet}"
+								filterMatchMode="contains" style="width: 28%">
+								<h:outputText value="#{mensaje.msgRet}" style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="COD. MENSAJE RETENCION AL CLIENTE"
+								sortBy="#{mensaje.codRetClte}" filterBy="#{mensaje.codRetClte}"
+								filterMatchMode="contains" style="width: 22%">
+								<h:outputText value="#{mensaje.codRetClte}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="MENSAJE RETENCION AL CLIENTE"
+								style="width: 10%">
+								<h:outputText value="#{mensaje.msgRetClte}"
+									style="float:center;">
+								</h:outputText>
+							</p:column>
+							<p:column headerText="OPCION" style="width: 10%"
+								rendered="#{parametrosController.parametrosModel.renderizarActualizacionParametro()}">
+								<center>
+									<p:commandButton title="Editar"
+										icon="ui-icon-arrowreturnthick-1-w"
+										oncomplete="dlgWvModificarMensaje.show();"
+										action="#{parametrosController.iniciarModificarMensaje(mensaje)}"
+										update=":formModificarMensaje">
+										<p:resetInput target=":formModificarMensaje" />
+									</p:commandButton>
+
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+					</center>
+				</p:fieldset>
+			</p:panelGrid>
+		</h:form>
+
+		<p:dialog header="Agregar Parametro" modal="true" appendTo="@(body)"
+			width="30%" resizable="false" widgetVar="dlgWvAgregarParametro"
+			dragable="false" closeOnEscape="true" position="center"
+			showEffect="clip" hideEffect="clip" id="dialogAgregarParametro">
+			<h:form id="formAgregarParametro">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					<h:outputText value="Descripción Corta: *"></h:outputText>
+					<p:inputText style="width:95%" id="descripcionCortaAgregar"
+						required="true"
+						value="#{parametrosController.parametrosModel.nuevoParametro.descripcionItemCorta}"
+						requiredMessage="Debe ingresar una descripción corta">
+					</p:inputText>
+					<h:outputText></h:outputText>
+					<p:message for="descripcionCortaAgregar" display="text" />
+					<h:outputText value="Descripcion Larga: *"></h:outputText>
+					<p:inputText id="descripcionLargaAgregar" required="true"
+						style="width:95%"
+						value="#{parametrosController.parametrosModel.nuevoParametro.descripcionItemLarga}"
+						requiredMessage="Debe ingresar una descripcion larga">
+					</p:inputText>
+					<h:outputText></h:outputText>
+					<p:message for="descripcionLargaAgregar" display="text" />
+					<h:outputText value="Valor: *"></h:outputText>
+						<p:inputText id="valorAgregar" required="true" style="width:95%"
+							value="#{parametrosController.parametrosModel.nuevoParametro.valorItem}"
+							requiredMessage="Debe ingresar un valor">
+						</p:inputText>
+						<h:outputText></h:outputText>
+						<p:message for="valorAgregar" display="text" />					
+					<h:outputText value="Estado: *"></h:outputText>
+					<p:selectOneMenu style="margin:-7px 0 7px 0"
+						value="#{parametrosController.parametrosModel.nuevoParametro.estadoItem}"
+						id="estadoAgregar" required="true"
+						requiredMessage="Debe seleccionar un Estado">
+						<f:selectItem itemValue="#{null}" itemLabel="SELECCIONE UN ESTADO"></f:selectItem>
+						<f:selectItems
+							value="#{parametrosController.parametrosModel.listaEstados}"
+							var="estado" itemValue="#{estado.id}" itemLabel="#{estado.valor}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText></h:outputText>
+					<p:message for="estadoAgregar" closable="true" display="text" />
+					<br></br>
+				</p:panelGrid>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="widgetTablaParametros.clearFilters();"
+						actionListener="#{parametrosController.agregarParametro()}"
+						update=":formAgregarParametro" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvAgregarParametro.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Agregar Parametro" modal="true" appendTo="@(body)"
+			width="30%" resizable="false" widgetVar="dlgWvAgregarVersion"
+			dragable="false" closeOnEscape="true" position="center"
+			showEffect="clip" hideEffect="clip"
+			id="dialogAgregarParametroVersion">
+			<h:form id="formAgregarVersion">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					<h:outputText value="Cod.Aplicacion: *"></h:outputText>
+					<p:inputText id="itCodAplicacion"
+						requiredMessage="Debe ingresar un codigo de aplicacion"
+						required="true"
+						value="#{parametrosController.parametrosModel.nuevaVersion.codApp}"
+						style="width:95%">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itCodAplicacion" display="text" />
+					<h:outputText value="S.O. App: *"></h:outputText>
+					<p:inputText id="itSOApp" requiredMessage="Debe ingresar un S.O."
+						required="true" style="width:95%"
+						value="#{parametrosController.parametrosModel.nuevaVersion.soApp}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itSOApp" display="text" />
+
+					<h:outputText value="Version App: *"></h:outputText>
+					<p:inputText id="itVersionApp"
+						requiredMessage="Debe ingresar una version App" required="true"
+						style="width:95%" maxlength="4"
+						value="#{parametrosController.parametrosModel.nuevaVersion.versApp}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itVersionApp" display="text" />
+					<h:outputText value="Nombre App: *"></h:outputText>
+					<p:inputText id="itNombreApp"
+						requiredMessage="Debe ingresar una nombre App" required="true"
+						style="width:95%"
+						value="#{parametrosController.parametrosModel.nuevaVersion.nombApp}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itNombreApp" display="text" />
+					<h:outputText value="Obligatorio App: *"></h:outputText>
+					<p:selectOneRadio
+						requiredMessage="Debe ingresar un obligatorio App" required="true"
+						id="sorObligatorioApp"
+						value="#{parametrosController.parametrosModel.nuevaVersion.goblib}">
+						<f:selectItem itemLabel="SI" itemValue="1" />
+						<f:selectItem itemLabel="NO" itemValue="0" />
+					</p:selectOneRadio>
+					<h:outputText />
+					<p:message for="sorObligatorioApp" display="text" />
+					<h:outputText value="Estado App: *"></h:outputText>
+					<p:selectOneMenu style="margin:-7px 0 7px 0"
+						requiredMessage="Debe seleccionar un estado"
+						value="#{parametrosController.parametrosModel.nuevaVersion.gEstado}"
+						id="soEstadoApp" required="true">
+						<f:selectItem itemValue="#{null}" itemLabel="SELECCIONE"></f:selectItem>
+						<f:selectItems
+							value="#{parametrosController.parametrosModel.listaEstados}"
+							var="estado" itemValue="#{estado.idn}"
+							itemLabel="#{estado.valor}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText />
+					<p:message for="soEstadoApp" display="text" />
+					<br></br>
+				</p:panelGrid>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="widgetTablaParametros.clearFilters();"
+						actionListener="#{parametrosController.agregarParametroVersion}"
+						update=":formAgregarVersion" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvAgregarVersion.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Agregar Parametro" modal="true" appendTo="@(body)"
+			width="30%" resizable="false" widgetVar="dlgWvAgregarMensaje"
+			dragable="false" closeOnEscape="true" position="center"
+			showEffect="clip" hideEffect="clip"
+			id="dialogAgregarParametroMensaje">
+			<h:form id="formAgregarMensaje">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					<h:outputText value="Cod.Aplicacion : *"></h:outputText>
+					<p:inputText id="itCodAplicacion"
+						requiredMessage="Debe ingresar un codigo de aplicacion"
+						required="true"
+						value="#{parametrosController.parametrosModel.nuevoMensaje.codApp}"
+						style="width:95%">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itCodAplicacion" display="text" />
+					<h:outputText value="Cod.Mensaje Retencion : *"></h:outputText>
+					<p:inputText id="itSOApp" requiredMessage="Debe ingresar un S.O."
+						required="true" style="width:95%"
+						value="#{parametrosController.parametrosModel.nuevoMensaje.codRet}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itSOApp" display="text" />
+					<h:outputText value="Mensaje Retencion : *"></h:outputText>
+					<p:inputText id="itMensajeRetApp"
+						requiredMessage="Debe ingresar una version App" required="true"
+						style="width:95%"
+						value="#{parametrosController.parametrosModel.nuevoMensaje.msgRet}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itMensajeRetApp" display="text" />
+					<h:outputText value="Mensaje retencion al cliente : *"></h:outputText>
+					<p:inputText id="itMensajeRetClApp"
+						requiredMessage="Debe ingresar una nombre App" required="true"
+						style="width:95%"
+						value="#{parametrosController.parametrosModel.nuevoMensaje.msgRetClte}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itMensajeRetClApp" display="text" />
+					<br></br>
+				</p:panelGrid>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="widgetTablaParametros.clearFilters();"
+						actionListener="#{parametrosController.agregarParametroMensaje}"
+						update=":formAgregarMensaje" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvAgregarMensaje.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+
+
+
+		<!-- modificar parametros de la tabla 22 -->
+		<p:dialog header="Modificar parametro" modal="true" appendTo="@(body)"
+			dragable="false" width="30%" resizable="false"
+			widgetVar="dlgWvModificarParametro" closeOnEscape="true"
+			position="center" showEffect="clip" hideEffect="clip"
+			id="dialogModificarParametro">
+			<h:form id="formModificarParametro">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					<h:outputText value="Descripción Corta"></h:outputText>
+					<p:inputText id="descripcionCortaModificar"
+						requiredMessage="Debe ingresar una descripción corta"
+						required="true"
+						value="#{parametrosController.parametrosModel.parametroModificado.descripcionItemCorta}"
+						style="width:95%">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="descripcionCortaModificar" display="text" />
+					<h:outputText value="Descripcion Larga"></h:outputText>
+					<p:inputText id="descripcionLargasModificar"
+						requiredMessage="Debe ingresar una descripcion larga"
+						required="true" style="width:95%"
+						value="#{parametrosController.parametrosModel.parametroModificado.descripcionItemLarga}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="descripcionLargasModificar" display="text" />
+					<h:outputText value="Valor"></h:outputText>
+					
+					<c:if test="#{parametrosController.parametrosModel.parametroModificado.idTabla == 1}">
+					<p:inputText id="valorModificar" 
+						requiredMessage="Debe ingresar un valor" required="true" maxlength="6" 
+						style="width:95%"
+						value="#{parametrosController.parametrosModel.parametroModificado.valorItem}">
+					</p:inputText>
+					</c:if>
+					
+					<c:if test="#{parametrosController.parametrosModel.parametroModificado.idTabla != 1}">
+					<p:inputText id="valorModificar" 
+						requiredMessage="Debe ingresar un valor" required="true" 
+						style="width:95%"
+						value="#{parametrosController.parametrosModel.parametroModificado.valorItem}">
+					</p:inputText>
+					</c:if>
+					
+					<h:outputText />
+					
+					<c:if test="#{parametrosController.parametrosModel.parametroModificado.idTabla == 1}">
+					
+					</c:if>
+					
+					<c:if test="#{parametrosController.parametrosModel.parametroModificado.idTabla != 1}">
+					<p:message for="valorModificar" display="text" />
+					<h:outputText value="Estado"></h:outputText>
+					<p:selectOneMenu style="margin:-7px 0 7px 0"
+						value="#{parametrosController.parametrosModel.parametroModificado.estadoItem}"
+						id="estadoModificar" required="true"
+						requiredMessage="Debe seleccionar un Estado">
+						<f:selectItem itemValue="#{null}" itemLabel="SELECCIONE UN ESTADO"></f:selectItem>
+						<f:selectItems
+							value="#{parametrosController.parametrosModel.listaEstados}"
+							var="estado" itemValue="#{estado.id}" itemLabel="#{estado.valor}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText />
+					<p:message for="estadoModificar" display="text" />
+					
+					</c:if>
+					
+					
+					<br></br>
+				</p:panelGrid>
+				<br></br>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="widgetTablaParametros.clearFilters();"
+						actionListener="#{parametrosController.modificarParametro()}"
+						update=":formModificarParametro" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvModificarParametro.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+		
+		
+
+		<p:dialog header="Modificar Parametro" modal="true" appendTo="@(body)"
+			width="30%" resizable="false" widgetVar="dlgWvModificarVersion"
+			dragable="false" closeOnEscape="true" position="center"
+			showEffect="clip" hideEffect="clip"
+			id="dialogModificarParametroVersion">
+			<h:form id="formModificarVersion">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					<h:outputText value="Cod.Aplicacion : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.versionModificada.codApp}" />
+					<h:outputText value="S.O. App : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.versionModificada.soApp}" />
+					<h:outputText value="Version App : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.versionModificada.versApp}" />
+					<h:outputText value="Nombre App : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.versionModificada.nombApp}" />
+					<h:outputText value="Obligatorio App : "></h:outputText>
+					<p:selectOneRadio
+						requiredMessage="Debe ingresar un obligatorio App" required="true"
+						id="sorObligatorioApp"
+						value="#{parametrosController.parametrosModel.versionModificada.goblib}">
+						<f:selectItem itemLabel="SI" itemValue="1" />
+						<f:selectItem itemLabel="NO" itemValue="0" />
+					</p:selectOneRadio>
+					<h:outputText />
+					<p:message for="sorObligatorioApp" display="text" />
+					<h:outputText value="Estado App : *"></h:outputText>
+					<p:selectOneMenu style="margin:-7px 0 7px 0"
+						value="#{parametrosController.parametrosModel.versionModificada.gEstado}"
+						id="soEstadoApp" required="true"
+						requiredMessage="Debe seleccionar un estado">
+						<f:selectItem itemValue="#{null}" itemLabel="SELECCIONE"></f:selectItem>
+						<f:selectItems
+							value="#{parametrosController.parametrosModel.listaEstados}"
+							var="estado" itemValue="#{estado.idn}"
+							itemLabel="#{estado.valor}">
+						</f:selectItems>
+					</p:selectOneMenu>
+					<h:outputText />
+					<p:message for="soEstadoApp" display="text" />
+					<br></br>
+				</p:panelGrid>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="widgetTablaParametros.clearFilters();"
+						actionListener="#{parametrosController.modificarParametroVersion}"
+						update=":formModificarVersion" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvModificarVersion.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Modificar Parametro" modal="true" appendTo="@(body)"
+			width="50%" resizable="false" widgetVar="dlgWvModificarMensaje"
+			dragable="false" closeOnEscape="true" position="center"
+			showEffect="clip" hideEffect="clip"
+			id="dialogModificarParametroMensaje">
+			<h:form id="formModificarMensaje">
+				<br></br>
+				<p:panelGrid columns="2" style="width:100%">
+					<h:outputText value="Cod.Aplicacion : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.mensajeModificado.codApp}" />
+
+					<h:outputText value="Cod.Mensaje Retencion : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.mensajeModificado.codRet}" />
+
+					<h:outputText value="Mensaje Retencion : "></h:outputText>
+					<h:outputText
+						value="#{parametrosController.parametrosModel.mensajeModificado.msgRet}" />
+
+					<h:outputText value="Mensaje retencion al cliente : "></h:outputText>
+					<p:inputText id="itMensajeRetCli"
+						requiredMessage="Debe ingresar un mensaje retencion a cliente"
+						required="true" size="80"
+						value="#{parametrosController.parametrosModel.mensajeModificado.msgRetClte}">
+					</p:inputText>
+					<h:outputText />
+					<p:message for="itMensajeRetCli" display="text" />
+					<br></br>
+				</p:panelGrid>
+				<center>
+					<p:commandButton value="Aceptar"
+						oncomplete="widgetTablaParametros.clearFilters();"
+						actionListener="#{parametrosController.modificarParametroMensaje}"
+						update=":formModificarMensaje" />
+					<p:commandButton value="Cancelar"
+						onclick="dlgWvModificarMensaje.hide();" />
+				</center>
+				<br></br>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

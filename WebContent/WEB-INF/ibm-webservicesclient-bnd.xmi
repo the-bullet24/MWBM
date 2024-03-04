@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.etools.webservice.wscbnd:ClientBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.etools.webservice.wscbnd="http://www.ibm.com/websphere/appserver/schemas/5.0.2/wscbnd.xmi" xmi:id="ClientBinding_1525278807744">
+  <serviceRefs xmi:id="ServiceRef_1525279292902" serviceRefLink="service/ParametroInterfazKeyService">
+    <portQnameBindings xmi:id="PortQnameBinding_1525279292902" portQnameNamespaceLink="http://service.ws.comp.bn.com.pe" portQnameLocalNameLink="ParametroInterfazKey" syncTimeout="15" overriddenEndpointURI="http://10.7.12.123:9080/WSParamService/services/ParametroInterfazKey"/>
+  </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1525279482847" serviceRefLink="service/ServiceMessageService">
+    <portQnameBindings xmi:id="PortQnameBinding_1525279482847" portQnameNamespaceLink="http://service.open.ws.simm.bn.www" portQnameLocalNameLink="ServiceMessage" syncTimeout="10" overriddenEndpointURI="http://10.7.10.57:9080/WsSimm/services/ServiceMessage"/>
+  </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1575304201486" serviceRefLink="service/ServicioNotificacionService">
+    <portQnameBindings xmi:id="PortQnameBinding_1575304201486" portQnameLocalNameLink="ServicioNotificacion" syncTimeout="10" overriddenEndpointURI="http://10.7.12.73/WSBMMensajeria/services/ServicioNotificacion"/>
+  </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1705001448099" serviceRefLink="service/BducWebserviceService">
+    <portQnameBindings xmi:id="PortQnameBinding_1705001448099" portQnameLocalNameLink="BducWebservice"/>
+  </serviceRefs>
+  <serviceRefs xmi:id="ServiceRef_1705001493319" serviceRefLink="service/AutenticaRegService">
+    <portQnameBindings xmi:id="PortQnameBinding_1705001493319" portQnameLocalNameLink="AutenticaReg"/>
+  </serviceRefs>
+</com.ibm.etools.webservice.wscbnd:ClientBinding>

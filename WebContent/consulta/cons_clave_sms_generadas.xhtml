@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formClave">
+			<p:growl id="mensaje" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel value="Consulta de Clave SMS Generadas"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<p:panelGrid columns="3" style="width:100%">
+							<p:panelGrid columns="4" id="pgClaveSMS">
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Buscar por: *" style="font-weight:bold" />
+								</p:panelGrid>
+								<p:panelGrid columns="5">
+
+									<p:selectOneMenu style="text-align:left;"
+									id="pgTipoBusqueda"
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.tipoBusquedaSeleccionada}">
+										
+										<p:ajax event="change"
+											listener="#{consultaClaveSMSController.obtenerFiltroBusqueda}"
+											update="formClave:pgSubClaveSMS formClave:itNumDocumento formClave:pgConsultaClaveSMS formClave:tablaConsultaClaveSMS" />
+											
+										<f:selectItems
+											value="#{consultaClaveSMSController.consultaClaveSMSModel.listaTipoBusquedaClaveSMS}"
+											var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+											itemLabel="#{tipoBusqueda.descripcion}"
+											onChange="jsFunction()" id="limpiar" />
+									</p:selectOneMenu>
+	
+									<p:selectOneMenu style="text-align:left;"
+										id="pgSubClaveSMS"
+										converter="omnifaces.SelectItemsConverter"
+										rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionConsulta}"
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.busquedaTipoDocumento}"
+										>
+										<p:ajax event="change"
+											process="@this"
+											listener="#{consultaClaveSMSController.obtenerSubFiltroBusquedaClaveSMS}"
+											update="formClave:itNumDocumento formClave:pgSubClaveSMS" />
+
+											<f:selectItems 
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.listaTipoDocumento}"
+								        var="tipoDocumento" itemValue="#{tipoDocumento.code}"
+											itemLabel="#{tipoDocumento.name}"/>	
+											
+									</p:selectOneMenu>
+									
+									<script type="text/javascript">
+										function validar(e) {
+											var tecla = e.keyCode;
+
+											if (tecla == 8 || tecla == 9
+													|| tecla == 13) {
+												return true;
+											}
+											var tipoBusqueda = "#{consultaClaveSMSController.consultaClaveSMSModel.tipoBusquedaSeleccionada}";
+											var tipoBusquedaTipoDocumento = "#{consultaClaveSMSController.consultaClaveSMSModel.subTipoDocumento}";
+											
+										if (tipoBusqueda == 1
+													|| tipoBusqueda == 2
+													|| tipoBusqueda == 4) {
+												var patron = /[0-9]/;
+												var tecla_final = String
+													.fromCharCode(tecla);
+												return patron.test(tecla_final);
+												
+											} else if (tipoBusqueda == 3) {
+
+												if (tipoBusquedaTipoDocumento == 4 || tipoBusquedaTipoDocumento == 5 ) {
+													var patron = /[a-zA-Z0-9]/i;
+													var tecla_final = String
+													.fromCharCode(tecla);
+												    return patron.test(tecla_final);
+													
+												} else {
+													var patron = /[0-9]/;
+													var tecla_final = String
+													.fromCharCode(tecla);
+													return patron.test(tecla_final);
+												}
+											}
+										}
+									</script>
+
+								 	<p:inputText id="itNumDocumento"
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.numDocumento}"
+										maxlength="#{consultaClaveSMSController.consultaClaveSMSModel.maxLength}"
+										onkeypress="return validar(event)"></p:inputText>
+
+									<script type="text/javascript">
+										$(document).ready(function() {
+											$('#limpiar').click(function() {
+												$('p:inputText').val('');
+											});
+										});
+									</script> 
+								</p:panelGrid>
+
+
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Fecha Inicial: "
+										style="font-weight:bold"
+										rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarFiltros}" />
+								</p:panelGrid>
+								<p:panelGrid columns="5" id="pgFechasBusqueda">
+									<p:calendar locale="es" id="maskFI" readonlyInput="true"
+										navigator="true"
+										rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarFiltros}"
+										maxdate="#{consultaClaveSMSController.consultaClaveSMSModel.maxFechaInicioBusqueda}"
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.fechaInicioBusqueda}" pattern="dd/MM/yyyy" mask="true">
+									</p:calendar>
+									
+									<h:outputText value="Fecha Final: "
+									rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarFiltros}"></h:outputText>
+									<p:calendar locale="es" id="maskFF" readonlyInput="true"
+										rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarFiltros}"
+										maxdate="#{consultaClaveSMSController.consultaClaveSMSModel.maxFechaFinBusqueda}"
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.fechaFinBusqueda}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true">
+									</p:calendar>
+									
+								</p:panelGrid>
+								
+									
+							<p:panelGrid columns="1">
+									<h:outputText value="Tipo de Operación:"
+										style="font-weight:bold"
+										rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarFiltros}"></h:outputText>
+							</p:panelGrid>
+								<p:panelGrid columns="1">
+									<p:selectOneMenu style="text-align:left;"
+									converter="omnifaces.SelectItemsConverter"
+									rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarFiltros}"
+									value="#{consultaClaveSMSController.consultaClaveSMSModel.busquedaTipoOperacion}">
+									
+									<p:ajax event="change"
+									process="@this"
+									listener="#{consultaClaveSMSController.obtenerFiltroTipoOperacion}"
+									update="formClave:pgComboTipoOperacion"/>
+									
+										<f:selectItems
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.listaTipoOperacion}"
+								        var="tipoOperacion" itemValue="#{tipoOperacion.code}"
+											itemLabel="#{tipoOperacion.name}"/>	
+									</p:selectOneMenu>
+							</p:panelGrid>
+							
+							<p:panelGrid columns="1">
+									<h:outputText value="Tipo de Transacción:"
+										style="font-weight:bold"
+										rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarCombo}"></h:outputText>
+							</p:panelGrid>
+							<p:panelGrid columns="2">
+									<p:selectOneMenu style="text-align:left;"
+									id="pgComboTipoOperacion"
+									converter="omnifaces.SelectItemsConverter"
+									rendered="#{consultaClaveSMSController.consultaClaveSMSModel.opcionOcultarCombo}"
+									value="#{consultaClaveSMSController.consultaClaveSMSModel.busquedaTipoTransaccion}">
+										<f:selectItems
+										value="#{consultaClaveSMSController.consultaClaveSMSModel.listaTransacciones}"
+								        var="tipoOperacion" itemValue="#{tipoOperacion.code}"
+											itemLabel="#{tipoOperacion.name}"/>	
+									</p:selectOneMenu>
+							</p:panelGrid>
+								</p:panelGrid>
+
+							<center>
+
+								<p:commandButton value="Buscar" id="consultarClave"
+									update="formClave:pgConsultaClaveSMS formClave:tablaConsultaClaveSMS formClave:mensaje"
+									onclick="statusDialog.show();"
+									oncomplete="statusDialog.hide();"
+									actionListener="#{consultaClaveSMSController.consultaServicio}"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+							</center>
+						</p:panelGrid>
+					</p:fieldset>
+				</p:panelGrid>
+
+			<p:panelGrid id="pgConsultaClaveSMS" columns="1"	
+					style="width:100%">
+					<p:fieldset id="fieldSetConsulta"
+					rendered="#{consultaClaveSMSController.consultaClaveSMSModel.busquedaNoRealizada()}">
+					
+					<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{consultaClaveSMSController.consultaClaveSMSModel.existeConsultasNoEncontradas()}" />
+							
+						<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink 
+								rendered="#{consultaClaveSMSController.consultaClaveSMSModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaClaveSMSController.generarReporte(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{consultaClaveSMSController.consultaClaveSMSModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaClaveSMSController.generarReporte(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+
+						<p:dataTable id="tablaConsultaClaveSMS"
+							
+							value="#{consultaClaveSMSController.consultaClaveSMSModel.listaClaveSMS}"
+							var="consulta" paginator="true" paginatorPosition="bottom"
+							rows="10" style="table-layout: fixed;"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+									 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+							rowsPerPageTemplate="10,20,50"
+							 rowIndexVar="index">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="ID Clave SMS"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Operador"
+										style="text-align:center;vertical-align: middle" />
+									
+									<p:column rowspan="2" headerText="Num. Celular"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Documento de identidad"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Nombre origen"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Tipo de operación"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Tipo de transacción"
+										style="text-align:center;vertical-align: middle" />									
+									
+									<p:column rowspan="2" headerText="Moneda"
+										style="text-align:center;vertical-align: middle" />
+											
+									<p:column rowspan="2" headerText="Importe"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Num. cuenta destino"
+										style="text-align:center;vertical-align: middle" />
+
+									<p:column rowspan="2" headerText="Nombre de destino"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Fecha de operación"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Canal de operación"
+										style="text-align:center;vertical-align: middle" />
+										
+									<p:column rowspan="2" headerText="Autorización"
+										style="text-align:center;vertical-align: middle" />
+
+								</p:row>
+							</p:columnGroup>
+							
+							<p:column rowspan="2" headerText="ID Clave SMS"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.codeToken}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Operador"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.operatorMobile eq null ? '-':consulta.operatorMobile}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Num. Celular"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.numberMobile eq null ? '-':consulta.numberMobile}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Documento de identidad"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.clientDocument}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Nombre origen"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.nameClient}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Tipo de transacción"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.typeOperation}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Tipo de operación"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.typeTransaction}" />
+							</p:column>							
+							
+							<p:column rowspan="2" headerText="Moneda"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.currencyType}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Importe"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.combinationTypeMoney}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Num. cuenta destino"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.codeBeneficiary eq null ? '-':consulta.codeBeneficiary}" />
+							</p:column>
+							
+								<p:column rowspan="2" headerText="Nombre de destino"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.nameBeneficiary eq null ? '-':consulta.nameBeneficiary}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Fecha de operación"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.dateInit}" />
+							</p:column>
+							
+								<p:column rowspan="2" headerText="Canal de operación"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.operChannel}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Autorización"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.smsStatus eq null ? '-':consulta.smsStatus}" />
+							</p:column>
+							
+							
+						</p:dataTable>
+					</p:fieldset>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</ui:define>
+</ui:composition>

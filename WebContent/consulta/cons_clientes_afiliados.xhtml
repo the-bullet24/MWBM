@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="../plantilla/plantilla.xhtml">
+
+	<ui:define name="metadata">
+	</ui:define>
+	<ui:define name="content">
+		<h:form id="formClave">
+			<p:growl id="mensaje" showSummary="false" showDetail="true" />
+			<center>
+				<br /> <br />
+				<p:outputLabel
+					value="Consulta de Reporte Consolidado de Clientes Afiliados"
+					style="font-weight: bolder;font:20px 'daxcompact-mediumregular';text-align:center;" />
+				<br /> <br />
+				<p:panelGrid columns="1" style="width:100%">
+					<p:fieldset>
+						<p:panelGrid columns="3" style="width:100%">
+							<p:panelGrid columns="8" id="pgClaveSMS">
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Periodo a consultar: "
+										style="font-weight:bold" />
+								</p:panelGrid>
+								<p:panelGrid columns="1">
+
+									<p:selectOneMenu style="text-align:left;"
+										value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.tipoBusquedaSeleccionada}">
+										<p:ajax event="change"
+											listener="#{consultaClientesAfiliadosController.obtenerFiltroBusqueda}"
+											update="formClave:pgConsultaClaveSMS formClave:tablaConsultaClientesAfiliados formClave:mensaje" />											
+										<f:selectItems
+											value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.listaBusquedaClientesAfiliados}"
+											var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+											itemLabel="#{tipoBusqueda.descripcion}"
+											onChange="jsFunction()" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+
+
+								<p:panelGrid columns="1">
+									<p:outputLabel value="Fecha Inicial: " style="font-weight:bold"
+										rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.opcionOcultarFiltros}" />
+								</p:panelGrid>
+								<p:panelGrid columns="1" id="pgFechasBusquedaInicial">
+									<p:calendar locale="es" id="maskFI"
+										navigator="#{consultaClientesAfiliadosController.clientesAfiliadosModel.bloquearFechaInicial}"
+										readonlyInput="#{consultaClientesAfiliadosController.clientesAfiliadosModel.bloquearFechaInicial}"
+										rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.opcionOcultarFiltros}"
+										mindate="#{consultaClientesAfiliadosController.clientesAfiliadosModel.minFechaInicioBusqueda}"
+										maxdate="#{consultaClientesAfiliadosController.clientesAfiliadosModel.maxFechaInicioBusqueda}"
+										value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.fechaInicioBusqueda}"
+										pattern="dd/MM/yyyy" mask="true">
+									</p:calendar>
+								</p:panelGrid>
+
+								<p:panelGrid columns="1">
+									<h:outputText value="Fecha Final: "
+										rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.opcionOcultarFiltros}">
+									</h:outputText>
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" id="pgFechasBusquedaFinal">
+									<p:calendar locale="es" id="maskFF" readonlyInput="true"
+										rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.opcionOcultarFiltros}"
+										mindate="#{consultaClientesAfiliadosController.clientesAfiliadosModel.minFechaInicioBusqueda}"
+										maxdate="#{consultaClientesAfiliadosController.clientesAfiliadosModel.maxFechaInicioBusqueda}"
+										value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.fechaFinBusqueda}"
+										navigator="true" pattern="dd/MM/yyyy" mask="true">
+									</p:calendar>
+								</p:panelGrid>
+
+								<p:fieldset columns="1" legend="Periodo Inicial"
+									style="height:100px; width:260px;"
+									rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.opcionConsulta}">
+									<h:panelGrid columns="2" cellpadding="10">
+										<p:selectOneMenu style="text-align:left;margin-right: 30px;"
+											value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.anioInicioSeleccionado}">
+
+											<f:selectItems
+												value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.listaAnios}"
+												var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+												itemLabel="#{tipoBusqueda.descripcion}"
+												onChange="jsFunction()" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu style="text-align:left;"
+											value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.mesInicioSeleccionado}">
+
+											<f:selectItems
+												value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.listaMeses}"
+												var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+												itemLabel="#{tipoBusqueda.nombre}" onChange="jsFunction()" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+								</p:fieldset>
+
+								<p:fieldset columns="1" legend="Periodo Final"
+									style="height:100px; width:260px;"
+									rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.opcionConsulta}">
+									<h:panelGrid columns="2" cellpadding="10">
+										<p:selectOneMenu style="text-align:left;"
+											value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.anioFinSeleccionado}">
+
+											<f:selectItems
+												value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.listaAnios}"
+												var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+												itemLabel="#{tipoBusqueda.descripcion}"
+												onChange="jsFunction()" />
+										</p:selectOneMenu>
+										<p:selectOneMenu style="text-align:left;"
+											value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.mesFinSeleccionado}">
+
+											<f:selectItems
+												value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.listaMeses}"
+												var="tipoBusqueda" itemValue="#{tipoBusqueda.id}"
+												itemLabel="#{tipoBusqueda.nombre}" onChange="jsFunction()" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+								</p:fieldset>
+
+							</p:panelGrid>
+
+
+
+							<center>
+
+								<p:commandButton value="Buscar" id="consultarClave"
+								    update="formClave:pgConsultaClaveSMS formClave:tablaConsultaClientesAfiliados formClave:mensaje"
+									onclick="statusDialog.show();"
+									oncomplete="statusDialog.hide();"
+									actionListener="#{consultaClientesAfiliadosController.obtenerListaConsolidadoClientesAfiliados}"
+									icon="#{cad['icono.buscar']}" styleClass="boton-operaciones" />
+							</center>
+
+						</p:panelGrid>
+					</p:fieldset>
+				</p:panelGrid>
+
+				<p:panelGrid id="pgConsultaClaveSMS" columns="1" style="width:100%">
+					<p:fieldset id="fieldSetConsulta"
+						rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.busquedaNoRealizada()}">
+
+						<h:outputText
+							value="No hay registro de consultas realizadas con criterios de busqueda seleccionados"
+							rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.existeConsultasNoEncontradas()}" />
+
+						<p:panelGrid columns="2" style="float:right;margin-right:2px;">
+							<h:commandLink
+								rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaClientesAfiliadosController.generarReporte(1)}">
+								<img src="#{request.contextPath}/resources/img/iconos/pdf.gif" />
+							</h:commandLink>
+							<h:commandLink
+								rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.existeConsultasEncontradas()}"
+								actionListener="#{consultaClientesAfiliadosController.generarReporte(2)}">
+								<img src="#{request.contextPath}/resources/img/iconos/xls.gif" />
+							</h:commandLink>
+						</p:panelGrid>
+
+						<p:dataTable id="tablaConsultaClientesAfiliados"
+							rendered="#{consultaClientesAfiliadosController.clientesAfiliadosModel.existeConsultasEncontradas()}"
+							value="#{consultaClientesAfiliadosController.clientesAfiliadosModel.listaClientesAfiliados}"							
+							var="consulta" paginator="true" paginatorPosition="bottom"
+							rows="10" style="table-layout: fixed;"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport}
+											 {NextPageLink} {LastPageLink} {RowsPerPageDropdown} "
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+							rowsPerPageTemplate="10,20,50" rowIndexVar="index">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="4" headerText="Fecha" />
+									<p:column colspan="3" headerText="Usuarios Afiliados" />
+									<p:column colspan="3" headerText="Usuarios Migrados" />
+									<p:column colspan="3" headerText="Usuarios Activados" />
+									<p:column colspan="5" headerText="Usuarios Desafiliados" />
+									<p:column colspan="3" headerText="Bloqueos Temporales" />
+									<p:column colspan="3" headerText="Bloqueos Permanentes" />
+								</p:row>
+								<p:row>
+									<p:column  rowspan="2" headerText="Ventanilla"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="ATM"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2"
+										headerText="Multired Virtual"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Banca Móvil"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2"
+										headerText="Multired Virtual"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Banca Móvil"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Ventanilla"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="ATM"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2"
+										headerText="Multired Virtual"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Banca Móvil"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+										<p:column  rowspan="2"
+										headerText="Multired Virtual"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Banca Móvil"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+										<p:column  rowspan="2"
+										headerText="Multired Virtual"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Banca Móvil"
+										style="text-align:center;vertical-align: middle" />
+									<p:column  rowspan="2" headerText="Total"
+										style="text-align:center;vertical-align: middle" />
+
+								</p:row>
+
+							</p:columnGroup>
+
+							<p:column rowspan="2" headerText="Fecha"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.date}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Ventanilla"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.windowUserAffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="ATM"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.atmUserAffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totUserAffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Multired Virtual"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.mvUserMigrated}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Banca Móvil"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.mbUserMigrated}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totUserMigrated}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Multired Virtual"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.mvUserActivated}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Banca Móvil"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.bmUserActivated}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totUserActivated}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Ventanilla"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.windowUserDisaffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="ATM"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.atmUserDisaffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Multired Virtual"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.mvUserDisaffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Banca Móvil"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.bmUserDisaffil}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totUserDisaffil}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Multired Virtual"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.mvBlockTemp}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Banca Móvil"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.bmBlockTemp}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totBlockTemp}" />
+							</p:column>
+							
+							<p:column rowspan="2" headerText="Multired Virtual"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.mvBlockPerm}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Banca Móvil"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.bmBlockPerm}" />
+							</p:column>
+
+							<p:column rowspan="2" headerText="Total"
+								style="text-align:center;vertical-align: middle">
+								<h:outputText value="#{consulta.totBlockPerm}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:fieldset>
+				</p:panelGrid>
+			</center>
+		</h:form>
+	</ui:define>
+</ui:composition>
