@@ -2,6 +2,17 @@ package pe.bn.com.mwbm.transversal.util.constantes;
 
 public class ConstantesPagina {
 
+	
+	
+	/*OPERACIONES*/	
+	public static final String TOTAL_OPERACIONES_NIVEL_NACIONAL = "\\\\srv1pfsbn2\\SecSistemasBancarios\\CANALES_VIRTUALES\\SIO\\01_Operaciones_Visa\\1_Operaciones_a_Nivel_Nacional\\Ayuda_Memoria_Operaciones.xls"; 
+	public static final String TOTAL_OPERACIONES_CAJEROS_MULTIRED = "\\\\srv1pfsbn2\\SecSistemasBancarios\\CANALES_VIRTUALES\\SIO\\01_Operaciones_Visa\\1_Operaciones_a_Nivel_Nacional\\cdro3_total_lima_prov.xlsx";
+	public static final String SERVICIOS_CORRESPONSALIA = "\\\\srv1pfsbn2\\SecSistemasBancarios\\CANALES_VIRTUALES\\SIO\\01_Operaciones_Visa\\1_Operaciones_a_Nivel_Nacional\\cdro2_total_servicios.xlsx";
+	public static final String OFICINAS_UOB="\\\\srv1pfsbn2\\SecSistemasBancarios\\CANALES_VIRTUALES\\SIO\\01_Operaciones_Visa\\1_Operaciones_a_Nivel_Nacional\\cdro8_total_departamentos.xlsx";
+
+	
+	
+	
 	public static final String PAGINA_INDEX = "/index.jsf";
 	public static final String PAGINA_PRINCIPAL = "/principal.jsf";
 	public static final String PAGINA_ACCESO_DENEGADO = "/acceso_denegado.jsf";

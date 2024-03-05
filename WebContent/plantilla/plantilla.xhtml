@@ -1,42 +1,97 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
 
+<f:view contentType="text/html" id="fview">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+	<title>Banco de la Nación - Modulo Web Banca Movil</title>
 
+	<ui:debug />
+	<f:metadata>
+		<ui:insert name="metadata" />
+	</f:metadata>
 
-<c:import url="header.jsp" />
+	<h:head>
+		<script>
+			PrimeFaces.locales['es'] = {
+				closeText : 'Cerrar',
+				prevText : 'Anterior',
+				nextText : 'Siguiente',
+				monthNames : [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
+						'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
+						'Noviembre', 'Diciembre' ],
+				monthNamesShort : [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+						'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
+				dayNames : [ 'Domingo', 'Lunes', 'Martes', 'Miércoles',
+						'Jueves', 'Viernes', 'Sábado' ],
+				dayNamesShort : [ 'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie',
+						'Sab' ],
+				dayNamesMin : [ 'Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab' ],
+				weekHeader : 'Semana',
+				firstDay : 1,
+				isRTL : false,
+				showMonthAfterYear : false,
+				yearSuffix : '',
+				timeOnlyTitle : 'Sólo hora',
+				timeText : 'Tiempo',
+				hourText : 'Hora',
+				minuteText : 'Minuto',
+				secondText : 'Segundo',
+				currentText : 'Fecha actual',
+				ampm : false,
+				month : 'Mes',
+				week : 'Semana',
+				day : 'Día',
+				allDayText : 'Todo el día'
+			};
+		</script>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<style>
-	.section{
-		margin: 0 auto;
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/css/resetearcss.css" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/css/login-principal.css" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/css/tipografias.css" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/css/plantillaMenu.css" />
+		<link rel="stylesheet" type="text/css"
+			href="#{request.contextPath}/resources/css/mftp.css" />
+
+	</h:head>
+
+	<h:body>
+		<p:layout fullPage="true" resizeTitle="resize">
 		
-	}
-	
-	
-</style>
+			<p:layoutUnit position="north" size="120" id="north">
+				<ui:include src="header.xhtml" />
+			</p:layoutUnit>
 
+			<p:layoutUnit styleClass="layoutUnitCenter" position="center"
+				style="font-size:9px;border:0;">
 
+				<p:scrollPanel mode="native" style="height:100%">
+					<ui:insert name="content" />
+				</p:scrollPanel>
 
-<body>	
+			</p:layoutUnit>
+		</p:layout>
 
-
-
-
-
-<p>MAIN - PRINCIPAL</p>
-
-<section class="section">
-	<div style="text-align: center;">
-        <img alt="" src="${pageContext.request.contextPath}/resources/images/banco-nacion.png" width="25%" height="25%">
-    </div>
-</section>
-
-
-
-
-
-
-<c:import url="footer.jsp" />
-
-
-</body>
+		<p:dialog
+			style="background-color: rgba(0, 0, 0, 0);box-shadow : none;border:none"
+			widgetVar="statusDialog" modal="true" draggable="false"
+			closable="false" resizable="false" showHeader="false"
+			header="Cargando">
+			<p:graphicImage name="img/ajaxloadingbar.gif" />
+		</p:dialog>
+	</h:body>
+</f:view>
 </html>

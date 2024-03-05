@@ -1,101 +1,155 @@
-<!DOCTYPE html>
-<html>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:botDetect = "https://captcha.com/java/jsf/simple-api"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	
+	<!-- CABERERA PRINCIPAL -->
+	
+	<div id="cabecera">
+		<div class="logo-sv">
+			<img src="#{request.contextPath}/resources/img/loguito-mwbm.jpg" />
+		</div>
+		
+		<!-- ####################################### -->
+		
+		<!-- CABECERA CON LOS DATOS AUTENTICA -->
+		
+		<div class="centrar">
+			<div class="presentacion">
+				<div class="izquierda">
+					<p:panelGrid columns="2" layout="grid" styleClass="tb-izquierda">
+						<p:outputLabel value="NOMBRE&nbsp;:	" />
+						<p:outputLabel value="#{seguridadController.seguridadModel.usuario.nombreCompleto()}" />
+						<p:outputLabel value="AREA&emsp;&ensp;&nbsp;&thinsp;:	" />
+						<p:outputLabel value="#{seguridadController.seguridadModel.usuario.nombreArea}" />
+					</p:panelGrid>
+				</div>
+				<div class="derecha">
+					<p:panelGrid columns="2" styleClass="tb-izquierda">
+						<p:outputLabel value="USUARIO&thinsp;&thinsp;:	" />
+						<p:outputLabel value="#{seguridadController.seguridadModel.usuario.username.toUpperCase()}" />
+						<p:outputLabel value="FECHA&emsp;&ensp;:	" />
 
-<head>
+					</p:panelGrid>
+				</div>
+			</div>
+		</div>
+		
+		
+		<!-- LOGO BN  -->
+		
+		<div class="logo-bn">
+			<img src="#{request.contextPath}/resources/img/logo-bn-2015.png" />
+		</div>
 
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/style.css">
+	
+	</div>
+	<!-- CABERERA PRINCIPAL -->
+	
+	<!-- ####################################### -->
+	
+	<br />
+	
+	
+	<h:form>
+	
+		<div id="cerrar" style="display: none;">
+			<p:commandLink ajax="false"
+				actionListener="#{seguridadController.cerrarSesion}">
+				<h:outputText value="Cerrar Sesión" />
+			</p:commandLink>
+		</div>
+		
+		
+		<!-- INACTIVIDAD DEL USUARIO -->
+		<p:idleMonitor
+			timeout="#{seguridadController.tiempoMaximoInactividad()}">
+			<p:ajax event="idle"
+				listener="#{seguridadController.forzarCierreSesion()}"
+				oncomplete="PF('sessionExpiredDialog').show();" />
+		</p:idleMonitor>
+		
+		<!-- INACTIVIDAD DEL USUARIO -->
 
+		<!-- ####################################### -->
+	
+		<!-- SESION EXPIRADA DEL USUARIO - REDIRECCION INDEX -->
+		
+		<p:dialog style="background-color:#f0f0f0;position:absolute"
+			header="Sesion Expirada" widgetVar="sessionExpiredDialog"
+			modal="true" appendToBody="true" closable="false" resizable="false"
+			draggable="false">
+			<div style="float: left; margin: 20px 0 20px 20px">
+				<p:graphicImage style="float:left" name="img/chica.png" />
+			</div>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<div style="float: right; margin: 20px 0 0 0">
+				<h:outputText style="position:relative;background: url(#{request.contextPath}/resources/img/plantillaBN/mapeo.jpg) no-repeat;height: 100px;padding: 35px 20px 0px 70px;width: 200px;float:right;margin-top:30px;"
+					value="#{seguridadController.mensajeSesionExpirada()}" />
+			</div>
 
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
+			<f:facet name="footer">
+				<div style="background-color: #f0f0f0; text-align: center;">
+					<p:button value="Aceptar" outcome="#{seguridadController.paginaLogin()}" />
+				</div>
+			</f:facet>
+		</p:dialog>
+		
+		<!-- SESION EXPIRADA DEL USUARIO - REDIRECCION INDEX -->
 
+		<!-- ####################################### -->
+		
+		<!-- MEGA MENU DE PAGINAS  -->
 
-<script>
-document.getElementById("menu").addEventListener("change", function(){
-  enviarMenu(this.value); 
-});
+		<p:megaMenu>
+			<p:submenu label="#{cad['menu.bancaMovil']}"
+				rendered="#{seguridadController.renderizar('ACCESO_CONSULTAS')}"
+				styleClass="fuente_menu1">
+				<p:column>
+					<p:submenu >
+						
+						<p:menuitem styleClass="fuente_menu2"
+         					   value="#{cad['menu.consulta.operaciones.realizadas']}"
+         					   actionListener="#{seguridadController.abrir}">
+    						<f:attribute name="opcion" value="1" />
+						</p:menuitem>
 
-function enviarMenu(opcion){
-  
-  function enviarMenu(opcion){
-  window.location.href = "Operacion?opcion="+opcion;
-}
-  
-}
-</script>
+						
+						<p:menuitem styleClass="fuente_menu2"
+							rendered="#{seguridadController.renderizar('ACCESO_CONSULTA_OPERACIONES_PRESTAMOS')}"
+							value="#{cad['menu.consulta.operaciones.prestamos']}"
+							actionListener="#{seguridadController.redireccionar}">
+							<f:attribute name="pagina"
+								value="/consulta/cons_operaciones_prestamos.jsf?faces-redirect=true" />
+						</p:menuitem>
 
+						<p:menuitem styleClass="fuente_menu2"
+							rendered="#{seguridadController.renderizar('ACCESO_CONSULTA_RESUMENES_OPERATIVOS')}"
+							value="#{cad['menu.consulta.resumenes.operativos']}"
+							actionListener="#{seguridadController.redireccionar}">
+							<f:attribute name="pagina"
+								value="/consulta/cons_resumenes.jsf?faces-redirect=true" />
+						</p:menuitem>
+						
+					</p:submenu>
+				</p:column>
+			</p:submenu>
 
+			
 
- <div class="nav">
-  <input type="checkbox" id="nav-check">
-  <div class="nav-header">
-    <div class="nav-title">
-      SIOP
-    </div>
-  </div>
-  <div class="nav-btn">
-    <label for="nav-check">
-      <span></span>
-      <span></span>
-      <span></span>
-    </label>
-  </div>
+			<f:facet name="options">
+				<p:commandButton value="CERRAR SESIÓN" id="cerrarsession"
+					actionListener="#{seguridadController.cerrarSesion}" ajax="false" />
+			</f:facet>
 
-  <div class="nav-links">
+		</p:megaMenu>
 
-  <div class="submenu">
-      <a href="#">OPERACIONES</a>
-      <div class="submenu-content" id="menu">
-        <a href="Operacion?opcion=1" >Total de Operaciones a Nivel Nacional</a>
-        <a href="Operacion?opcion=2" >Total de Operaciones de Cajeros Multired</a>        	
-        <a href="Operacion?opcion=3" >Servicios de Corresponsalia</a>
-        <a href="Operacion?opcion=4" >Oficinas UOB</a>
-      </div>
-    </div>
+	</h:form>
 
-
-   
-
-
-    <div class="submenu">
-      <a href="#">POS-VISA</a>
-      <div class="submenu-content">
-        <a href="#" >Reportes POS-VISA</a>        
-      </div>
-    </div>
-
-
-
-
-    <div class="submenu">
-      <a href="#">PRESTAMOS</a>
-      
-      <div class="submenu-content">
-        <a href="#" >Reportes Prestamos</a>        	        	        
-      </div>
-    </div>
-
-
-
-
-
-    <div class="submenu">
-      <a href="#">MANTENIMIENTO</a>
-      <div class="submenu-content">
-      
-      
-        <a href="#" >Dimensiones Oficinas</a>
-        	
-      
-      
-        <a href="#" >Dimensiones Servicios</a>
-      
-      
-        <a href="#" >Dimensiones Empresas</a>
-      </div>
-    </div>
-  </div>
-</div>
+</ui:composition>

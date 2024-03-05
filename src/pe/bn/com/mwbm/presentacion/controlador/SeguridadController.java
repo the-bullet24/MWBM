@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -25,6 +26,8 @@ public class SeguridadController implements Serializable {
 	private static final Logger LOGGER = Logger.getLogger(SeguridadController.class);
 	private static final long serialVersionUID = 1L;
 
+	
+	private ConstantesPagina parametros;
 	private SeguridadModel seguridadModel;
 
 	@PostConstruct
@@ -80,6 +83,55 @@ public class SeguridadController implements Serializable {
 		return false;
 	}
 
+	
+	//METODO 
+	
+	
+	public void abrir(ActionEvent event) throws IOException {
+	    UIComponent component = event.getComponent();
+	    String opcion = (String) component.getAttributes().get("opcion");
+
+	    String documento = parametros.TOTAL_OPERACIONES_NIVEL_NACIONAL;
+	    String documento2 = parametros.TOTAL_OPERACIONES_CAJEROS_MULTIRED;
+	    String documento3 = parametros.SERVICIOS_CORRESPONSALIA;
+	    String documento4 = parametros.OFICINAS_UOB;
+
+	    if ("1".equals(opcion)) {
+	        Runtime.getRuntime().exec("cmd /c start " + documento);
+	    } else if ("2".equals(opcion)) {
+	        Runtime.getRuntime().exec("cmd /c start " + documento2);
+	    } else if ("3".equals(opcion)) {
+	        Runtime.getRuntime().exec("cmd /c start " + documento3);
+	    } else if ("4".equals(opcion)) {
+	        Runtime.getRuntime().exec("cmd /c start " + documento4);
+	    }
+	}
+
+
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public void redireccionar(ActionEvent event) {
 		String pagina = (String) event.getComponent().getAttributes().get("pagina");
 		try {
@@ -90,6 +142,10 @@ public class SeguridadController implements Serializable {
 		}
 	}
 
+	
+	
+	
+	
 	public SeguridadModel getseguridadModel() {
 		return seguridadModel;
 	}

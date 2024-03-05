@@ -5,10 +5,21 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="/plantilla/plantilla.xhtml"> 
 
-
-
-
-
+	<ui:define name="metadata" />
 	
+	
+	<ui:define name="content">
+
+		<h:form id="frmPrincipal">
+			<p:growl id="mess" showDetail="true" />
+			
+			<center>
+				<br />
+				<p:outputLabel value="otra seccion"
+					style="font-weight: bold; font-size: 15px;" />
+				<br /> <br />	
+			</center>
+		</h:form>
+	</ui:define>
 	
 </ui:composition>
